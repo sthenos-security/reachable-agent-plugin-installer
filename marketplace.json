@@ -1,0 +1,92 @@
+{
+  "$schema": "./schemas/marketplace.schema.json",
+  "name": "reachable-agent-plugin-installer",
+  "publisher": "Sthenos Security",
+  "description": "GitHub-backed framework for REACHABLE agent plugin installers.",
+  "version": "0.1.0",
+  "repository": "https://github.com/sthenos-security/reachable-agent-plugin-installer",
+  "license": "Apache-2.0",
+  "official_site": "https://sthenosec.com",
+  "release_channel": {
+    "manifest": "https://sthenosec.com/download/manifest.json",
+    "installer": "https://sthenosec.com/download/plugins/install.sh",
+    "frontend_role": "primary-public-download-endpoint",
+    "artifact_authority": {
+      "builder_repository": "https://github.com/sthenos-security/reach-core",
+      "artifact_repository": "https://github.com/sthenos-security/reach-dist",
+      "download_policy": "do-not-download-directly-use-sthenosec-frontend"
+    },
+    "signing": {
+      "scheme": "sigstore-cosign-keyless",
+      "oidc_issuer": "https://token.actions.githubusercontent.com",
+      "certificate_identity_regexp": "https://github.com/sthenos-security/reach-core/.*",
+      "checksums": "sha256",
+      "fail_closed": true
+    }
+  },
+  "plugins": [
+    {
+      "agent": "claude-code",
+      "name": "reachable",
+      "path": "plugins/claude-code",
+      "category": "Security",
+      "install_ux": [
+        "Install REACHABLE from the agent marketplace.",
+        "Open the target workspace.",
+        "Run reachable: setup.",
+        "Run reachable: doctor."
+      ],
+      "mcp": {
+        "server_name": "reachable",
+        "status": "installed-after-setup",
+        "managed_by": "reachable: setup",
+        "verify": "reachable: doctor",
+        "configure": "reachable: doctor --configure",
+        "runtime": "local REACHABLE daemon",
+        "bundled": false
+      }
+    },
+    {
+      "agent": "cursor",
+      "name": "reachable",
+      "path": "plugins/cursor",
+      "category": "Security",
+      "install_ux": [
+        "Install REACHABLE from the agent marketplace.",
+        "Open the target workspace.",
+        "Run reachable: setup.",
+        "Run reachable: doctor."
+      ],
+      "mcp": {
+        "server_name": "reachable",
+        "status": "installed-after-setup",
+        "managed_by": "reachable: setup",
+        "verify": "reachable: doctor",
+        "configure": "reachable: doctor --configure",
+        "runtime": "local REACHABLE daemon",
+        "bundled": false
+      }
+    },
+    {
+      "agent": "codex",
+      "name": "reachable",
+      "path": "plugins/codex",
+      "category": "Security",
+      "install_ux": [
+        "Install REACHABLE from the agent marketplace.",
+        "Open the target workspace.",
+        "Run reachable: setup.",
+        "Run reachable: doctor."
+      ],
+      "mcp": {
+        "server_name": "reachable",
+        "status": "installed-after-setup",
+        "managed_by": "reachable: setup",
+        "verify": "reachable: doctor",
+        "configure": "reachable: doctor --configure",
+        "runtime": "local REACHABLE daemon",
+        "bundled": false
+      }
+    }
+  ]
+}

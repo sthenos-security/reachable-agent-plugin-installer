@@ -1,0 +1,25 @@
+{
+  "name": "reachable-agent-plugin-installer",
+  "owner": {
+    "name": "Sthenos Security",
+    "email": "security@sthenosec.com"
+  },
+  "plugins": [
+    {
+      "name": "reachable",
+      "source": "./plugins/claude-code",
+      "description": "Bootstrap REACHABLE setup and doctor commands for Claude Code workspaces.",
+      "version": "0.1.0",
+      "category": "security",
+      "tags": [
+        "security",
+        "ai-security",
+        "mcp",
+        "supply-chain-security"
+      ],
+      "author": {
+        "name": "Sthenos Security"
+      }
+    }
+  ]
+}

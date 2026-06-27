@@ -1,0 +1,20 @@
+{
+  "name": "reachable-agent-plugin-installer",
+  "interface": {
+    "displayName": "REACHABLE Agent Plugin Installer"
+  },
+  "plugins": [
+    {
+      "name": "reachable",
+      "source": {
+        "source": "local",
+        "path": "./plugins/codex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Security"
+    }
+  ]
+}
