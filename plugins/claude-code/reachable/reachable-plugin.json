@@ -1,0 +1,62 @@
+{
+  "agent": "claude_code",
+  "bootstrap_package": {
+    "agents": [
+      "codex",
+      "claude_code",
+      "cursor"
+    ],
+    "copyright": "Copyright (c) 2026 Sthenos Security. All rights reserved.",
+    "entrypoints": {
+      "cli": "reachctl vibe",
+      "hook_check": "reachctl hook-check",
+      "install_plugin": "scripts/install-plugin.sh",
+      "setup": "scripts/setup.sh"
+    },
+    "install_experience": {
+      "beta_fallback": "manual_curl_setup_plugin_install",
+      "browser_zip": "debug_only",
+      "curl_installer": "scripts/install-plugin.sh",
+      "preferred": "marketplace_setup_skill",
+      "setup_skill": "reachable: setup",
+      "setup_wrapper": "scripts/setup.sh"
+    },
+    "installer": {
+      "invocation": {
+        "argv": [
+          "{installer_path}",
+          "--update",
+          "--vibe",
+          "--agent",
+          "{agent}",
+          "--repo",
+          "{repo_path}",
+          "--no-baseline"
+        ],
+        "default_release_selector": "latest",
+        "dry_run_network": "official_installer_only",
+        "local_wheel_flag": "--wheel",
+        "requires_local_wheel_path": false,
+        "version_flag": "--version"
+      },
+      "kind": "official_reach_dist_installer",
+      "path": "install.sh",
+      "repository": "sthenos-security/reach-dist"
+    },
+    "name": "reachable-plugin-installer",
+    "plugin_installer": {
+      "copyright": "Copyright (c) 2026 Sthenos Security. All rights reserved.",
+      "curl_path_installs_agent_wrapper_only": true,
+      "display_name": "REACHABLE",
+      "name": "reachable-plugin-installer",
+      "publisher": "Sthenos Security",
+      "user_prompt": "reachable: setup"
+    },
+    "publisher": "Sthenos Security",
+    "schema_version": 1,
+    "version": "1.0.0b166"
+  },
+  "package": "reachable-claude-code-adapter",
+  "schema_version": 1,
+  "version": "1.0.0b166"
+}

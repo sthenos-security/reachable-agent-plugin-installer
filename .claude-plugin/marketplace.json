@@ -1,25 +1,36 @@
 {
-  "name": "reachable-agent-plugin-installer",
+  "description": "REACHABLE by Sthenos Security - reachability-verified AppSec and AI supply-chain scanning, plus autonomous remediation, wired into Claude Code.",
+  "name": "sthenos-security",
   "owner": {
+    "email": "support@sthenosec.com",
     "name": "Sthenos Security",
-    "email": "security@sthenosec.com"
+    "url": "https://sthenosec.com"
   },
   "plugins": [
     {
-      "name": "reachable",
-      "source": "./plugins/claude-code",
-      "description": "Bootstrap REACHABLE setup and doctor commands for Claude Code workspaces.",
-      "version": "0.1.0",
-      "category": "security",
-      "tags": [
-        "security",
-        "ai-security",
-        "mcp",
-        "supply-chain-security"
-      ],
       "author": {
-        "name": "Sthenos Security"
-      }
+        "email": "support@sthenosec.com",
+        "name": "Sthenos Security",
+        "url": "https://sthenosec.com"
+      },
+      "category": "security",
+      "description": "Install, verify and drive the REACHABLE local runtime from Claude Code. Adds the reachable MCP server and the reachable: setup / doctor / status skills.",
+      "homepage": "https://sthenosec.com",
+      "keywords": [
+        "security",
+        "appsec",
+        "sast",
+        "reachability",
+        "supply-chain",
+        "ai-security",
+        "remediation",
+        "mcp"
+      ],
+      "license": "LicenseRef-Sthenos-Proprietary",
+      "name": "reachable",
+      "repository": "https://github.com/sthenos-security/reachable-agent-plugin-installer",
+      "source": "./plugins/claude-code/reachable",
+      "version": "1.0.0b166"
     }
   ]
 }

@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+set -eu
+# stdout is the MCP protocol stream. Anything written there that is not a
+# JSON-RPC message desynchronises the client, so every diagnostic goes to stderr.
+script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+package_root="$(dirname "$script_dir")"
+
+if command -v reachctl >/dev/null 2>&1; then
+    exec reachctl vibe mcp serve "$@"
+fi
+
+echo "reachable: runtime not installed; running setup before serving MCP" >&2
+if [ -x "$package_root/scripts/setup.sh" ]; then
+    # Setup writes progress to stdout, which would corrupt the protocol stream.
+    "$package_root/scripts/setup.sh" >&2 || {
+        echo "reachable: setup failed; cannot serve MCP" >&2
+        exit 1
+    }
+fi
+
+if command -v reachctl >/dev/null 2>&1; then
+    exec reachctl vibe mcp serve "$@"
+fi
+echo "reachable: reachctl still not on PATH after setup; refusing to serve" >&2
+exit 1
