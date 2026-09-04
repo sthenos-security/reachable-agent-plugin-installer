@@ -1,23 +1,74 @@
-# REACHABLE for Claude Code
+# REACHABLE agent plugin installer
 
-Requires the REACHABLE runtime, already installed and licensed. This repository
-is the Claude Code marketplace catalog. Installing the plugin here registers
-the local `reachable` MCP server and the `reachable: setup` / `reachable: doctor`
-/ `reachable: status` skills. It does not contain the scanner.
+Requires the REACHABLE runtime (installed by `reachable: setup` or the full
+vibe install). This repository is the public marketplace catalog for REACHABLE:
+
+- **Claude Code (M1):** `.claude-plugin/marketplace.json` → `plugins/claude-code/reachable`
+- **Codex (M2):** `.agents/plugins/marketplace.json` → `plugins/codex/reachable`
+
+Installing the plugin registers the local `reachable` MCP path and the
+`reachable: setup` / `reachable: doctor` / `reachable: status` skills. It does
+not contain the scanner.
 
 This marketplace wrapper is not signature-gated. The trust boundary is the
 signed release channel that `reachable: setup` pulls from
 https://sthenosec.com/download.
 
-## Install
+Product download (vibe-coding default): https://sthenosec.com/download  
+Standard SDLC / CI scanner-only: https://sthenosec.com/download/sdlc
+
+## Download / install
+
+### Claude Code
 
 ```sh
 claude plugin marketplace add https://github.com/sthenos-security/reachable-agent-plugin-installer
 claude plugin install reachable@sthenos-security
 ```
 
-Then, in the target workspace, run `reachable: setup`. Use `reachable: doctor`
-to verify.
+### Codex
+
+```sh
+codex plugin marketplace add https://github.com/sthenos-security/reachable-agent-plugin-installer
+codex plugin add reachable@sthenos-security
+```
+
+### Cursor
+
+Cursor's public marketplace requires an open-source plugin. Until that wrapper
+decision, use the signed curl bootstrap:
+
+```sh
+curl -fsSL https://sthenosec.com/download/plugins/install.sh | bash -s -- --agent cursor
+```
+
+### Full vibe runtime (optional terminal path)
+
+Same continuous surface the plugin setup path installs:
+
+```sh
+curl -fsSL https://sthenosec.com/download/install.sh | bash
+```
+
+### Standard SDLC / CI (`--no-vibe`)
+
+Scanner-only installs for pipelines and terminals (no daemon). Prefer the
+dedicated page https://sthenosec.com/download/sdlc:
+
+```sh
+curl -fsSL https://sthenosec.com/download/install.sh | bash -s -- --no-vibe
+export PATH="$HOME/.reachable/venv/bin:$PATH"
+reachctl scan /path/to/repo
+```
+
+### After the plugin
+
+In the target workspace:
+
+```text
+reachable: setup
+reachable: doctor
+```
 
 ## What the MCP server does
 
@@ -42,15 +93,7 @@ The tools:
 `vibe.open_config` is the one non-pure-reader. It opens an observe-only Doctor URL.
 Use `reachable: doctor --configure` for changes.
 
-## Cursor and Codex
+## Version
 
-This catalog is the Claude Code marketplace (M1). Cursor's public marketplace
-requires an open-source plugin; Codex's public directory does not accept local
-stdio MCP. Those hosts install via:
-
-```sh
-curl -fsSL https://sthenosec.com/download/plugins/install.sh | bash -s -- --agent cursor
-curl -fsSL https://sthenosec.com/download/plugins/install.sh | bash -s -- --agent codex
-```
-
-Then run `reachable: setup` in the agent.
+Plugin trees on `main` match the signed adapter for the current public release
+(for example `1.0.0b178`). Content pins live in `reachable-skill-manifest.json`.
