@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "reachable": {
+      "args": [],
+      "command": "${CLAUDE_PLUGIN_ROOT}/bin/reachable-mcp",
+      "env": {
+        "REACHABLE_MCP_AGENT": "claude_code"
+      },
+      "type": "stdio"
+    }
+  }
+}
