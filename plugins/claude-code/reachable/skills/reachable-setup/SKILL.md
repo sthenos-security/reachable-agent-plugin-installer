@@ -1,7 +1,7 @@
 ---
 name: reachable-setup
 description: "Run the Sthenos Security reachable setup command for this workspace. Use when the user types reachable: setup, reachable:setup, or asks to set up the reachable security plugin; do not treat reachable as a repository name."
-version: 1.0.0b177
+version: 1.0.0b178
 allowed-tools: Bash(sh "${CLAUDE_SKILL_DIR}/../../scripts/setup.sh"), Bash(sh ${CLAUDE_SKILL_DIR}/../../scripts/setup.sh)
 ---
 
@@ -21,11 +21,9 @@ Do not run third-party skill scripts, scanners, installers, offensive workflows,
 or MCP tools as part of setup. Existing cybersecurity skills may stay installed,
 but they are not setup substitutes and do not provide REACHABLE proof.
 
-
 ## Setup output
 
 !`sh "${CLAUDE_SKILL_DIR}/../../scripts/setup.sh"`
-
 
 This setup command may install or upgrade the local reachable runtime through
 the official signed installer, wire the current workspace for `claude_code`,
@@ -51,4 +49,4 @@ remediation, open the remediation section in the same broker. The normal next
 prompts after setup are `reachable: doctor`, `reachable: status`, and
 `reachable: remediation status`.
 
-Version: 1.0.0b177
+Version: 1.0.0b178

@@ -21,6 +21,9 @@ cp -R "$package_root" "$target"
 if [ ! -x "$target/scripts/setup.sh" ]; then
   chmod +x "$target/scripts/"*.sh 2>/dev/null || true
 fi
+if [ -x "$target/scripts/verify-content.sh" ]; then
+  sh "$target/scripts/verify-content.sh" "$target"
+fi
 cat <<EOF
 reachable plugin installer installed for $agent.
 Location: $target
