@@ -1,0 +1,38 @@
+{
+  "author": {
+    "name": "Sthenos Security"
+  },
+  "description": "REACHABLE setup and local agent integration for Codex.",
+  "homepage": "https://sthenosec.com",
+  "interface": {
+    "capabilities": [
+      "Local setup",
+      "MCP status",
+      "Remediation control"
+    ],
+    "category": "Developer Tools",
+    "defaultPrompt": [
+      "Check REACHABLE setup and remediation status for this workspace",
+      "Run the REACHABLE doctor and explain what is failing",
+      "Show REACHABLE findings that are actually reachable in this repo"
+    ],
+    "developerName": "Sthenos Security",
+    "displayName": "REACHABLE",
+    "longDescription": "REACHABLE provides local setup, status, and remediation control-plane integration for Codex through the installed Reachable daemon.",
+    "shortDescription": "Set up REACHABLE local agent integration."
+  },
+  "keywords": [
+    "security",
+    "appsec",
+    "sast",
+    "reachability",
+    "supply-chain",
+    "ai-security",
+    "remediation",
+    "mcp"
+  ],
+  "license": "LicenseRef-Sthenos-Proprietary",
+  "name": "reachable",
+  "repository": "https://github.com/sthenos-security/reachable-agent-plugin-installer",
+  "version": "1.0.0-beta.178"
+}

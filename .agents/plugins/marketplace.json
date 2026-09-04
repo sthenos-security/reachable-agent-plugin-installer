@@ -1,0 +1,21 @@
+{
+  "interface": {
+    "displayName": "REACHABLE by Sthenos Security"
+  },
+  "name": "sthenos-security",
+  "plugins": [
+    {
+      "category": "Security",
+      "name": "reachable",
+      "policy": {
+        "authentication": "ON_INSTALL",
+        "installation": "AVAILABLE"
+      },
+      "source": {
+        "path": "./plugins/codex/reachable",
+        "source": "local"
+      }
+    }
+  ],
+  "version": "1.0.0b178"
+}
