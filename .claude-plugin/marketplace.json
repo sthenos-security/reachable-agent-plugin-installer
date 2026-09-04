@@ -30,7 +30,7 @@
       "name": "reachable",
       "repository": "https://github.com/sthenos-security/reachable-agent-plugin-installer",
       "source": "./plugins/claude-code/reachable",
-      "version": "1.0.0b173"
+      "version": "1.0.0b177"
     }
   ]
 }
