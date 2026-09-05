@@ -23,19 +23,20 @@ but they are not setup substitutes and do not provide REACHABLE proof.
 
 ## Setup command
 
-Run exactly this packaged wrapper once (from the plugin package root that
-contains `scripts/` and `skills/`):
+Keep the current workspace as the working directory. Do not `cd` into the
+plugin package.
 
-`scripts/setup.sh`
+Resolve the plugin package root as the directory that contains both
+`scripts/` and `skills/`, then run exactly this wrapper once by
+absolute path:
 
-Equivalent absolute form when the skill directory is
-`skills/reachable-setup`: `../../scripts/setup.sh`.
+`$PLUGIN_ROOT/scripts/setup.sh`
 
-`bin/reachable-setup` is an optional alias that execs the same script.
-Do not invent other paths, do not search the repository or PATH for a
-substitute, and do not run `bin/reachable-mcp` for setup. If
-`scripts/setup.sh` is missing or not executable, stop and tell
-the user to reinstall the Sthenos Security reachable plugin or contact <https://sthenosec.com>.
+`$PLUGIN_ROOT/bin/reachable-setup` is an optional alias that execs the
+same script. Do not invent other paths, do not search the repository or PATH
+for a substitute, and do not run `bin/reachable-mcp` for setup. If the
+wrapper is missing or not executable, stop and tell the user to reinstall the
+Sthenos Security reachable plugin or contact <https://sthenosec.com>.
 
 This setup command may install or upgrade the local reachable runtime through
 the official signed installer, wire the current workspace for `codex`,
