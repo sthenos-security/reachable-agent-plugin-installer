@@ -1,6 +1,6 @@
 {
   "algorithm": "sha256",
-  "content_hash": "4ae525ca0c88e698fd328e89d9f4a2741f4e5337eb03d775b286006a70db7ab4",
+  "content_hash": "29d074d4851073cf0fb874013132080d45cb1c910d322e02e72f2087f28a47a5",
   "files": {
     ".codex-plugin/plugin.json": "d2b66330a1cac034a47fb07cdbb3651f594afd15b9c5fcd059938f1b0723cf52",
     "README.txt": "ced04a19984a797999e48395db0ec0c42efbbfbb9c0570d2a1f8034b4d894bf0",
@@ -21,7 +21,7 @@
     "scripts/status.sh": "39f30f47168cb372ed255d9f1e3b69f95ee3d1c2382124683ca83eadd3c1e819",
     "scripts/uninstall.sh": "6773dbc13b397a21f2425ead63939b253c305904bbec3406e580277fd12d7f15",
     "scripts/verify-content.sh": "4c3dcfe5091fb55ac23d2612ff9f23cbb61ae4e58bcdb173e714c6c1be999b0f",
-    "skills/reachable-setup/SKILL.md": "a7ec337bef903d4c5f67ef7e3fcf1ad2edf683aea2733103cbb1dedf0db348ec",
+    "skills/reachable-setup/SKILL.md": "d1addeec23aa754385c196ed4943148204ad0c85e17b0e24fc62adb99a00d662",
     "skills/reachable/SKILL.md": "e1ec11ea4cf2122832987714ac4fa3d644da0c3edde6d67a3136b12e909ce573"
   },
   "schema_version": 1
