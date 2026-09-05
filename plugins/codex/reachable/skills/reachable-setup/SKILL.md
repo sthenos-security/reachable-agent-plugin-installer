@@ -23,8 +23,7 @@ but they are not setup substitutes and do not provide REACHABLE proof.
 
 ## Setup command
 
-Keep the current workspace as the working directory. Do not cd into the
-plugin package.
+Keep the current workspace as the working directory. Do not cd into the plugin package.
 
 Resolve the plugin package root as the directory that contains both
 `scripts/` and `skills/`, then run exactly this wrapper once by

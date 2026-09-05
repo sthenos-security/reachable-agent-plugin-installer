@@ -56,7 +56,7 @@
     "schema_version": 1,
     "version": "1.0.0b178"
   },
-  "content_hash": "29d074d4851073cf0fb874013132080d45cb1c910d322e02e72f2087f28a47a5",
+  "content_hash": "9b90cee52dd90f26725f2bda61c7dc7f6c18523dcf9dccce771dcdb28800fda1",
   "content_manifest": "reachable-skill-manifest.json",
   "package": "reachable-codex-adapter",
   "schema_version": 1,
