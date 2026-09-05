@@ -56,7 +56,7 @@
     "schema_version": 1,
     "version": "1.0.0b178"
   },
-  "content_hash": "58aeff1733319ac3077d208edebc0d13cb1d8c3dac2088ec1daf0810b197798b",
+  "content_hash": "b7ad389d86327a247137c15ab2f0ccf21e5e252b466e409de80338f936b7fbca",
   "content_manifest": "reachable-skill-manifest.json",
   "package": "reachable-claude-code-adapter",
   "schema_version": 1,

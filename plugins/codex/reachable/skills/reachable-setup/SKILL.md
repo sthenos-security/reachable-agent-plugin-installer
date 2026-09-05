@@ -21,10 +21,21 @@ Do not run third-party skill scripts, scanners, installers, offensive workflows,
 or MCP tools as part of setup. Existing cybersecurity skills may stay installed,
 but they are not setup substitutes and do not provide REACHABLE proof.
 
-Execute the packaged setup wrapper from this plugin. If the packaged setup
-wrapper is missing or not executable, stop and tell the user to reinstall the
-Sthenos Security reachable plugin or contact <https://sthenosec.com>. Do not
-search the repository, shell path, or sibling directories for a substitute.
+## Setup command
+
+Run exactly this packaged wrapper once (from the plugin package root that
+contains `scripts/` and `skills/`):
+
+`scripts/setup.sh`
+
+Equivalent absolute form when the skill directory is
+`skills/reachable-setup`: `../../scripts/setup.sh`.
+
+`bin/reachable-setup` is an optional alias that execs the same script.
+Do not invent other paths, do not search the repository or PATH for a
+substitute, and do not run `bin/reachable-mcp` for setup. If
+`scripts/setup.sh` is missing or not executable, stop and tell
+the user to reinstall the Sthenos Security reachable plugin or contact <https://sthenosec.com>.
 
 This setup command may install or upgrade the local reachable runtime through
 the official signed installer, wire the current workspace for `codex`,

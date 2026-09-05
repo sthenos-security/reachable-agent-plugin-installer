@@ -1,10 +1,11 @@
 {
   "algorithm": "sha256",
-  "content_hash": "033eb317281cf85ea0a86c1d060253fa0a49606d942bd33f9234c9c4302aa9a2",
+  "content_hash": "672c1b7090dd0c10dad45a22725d781870de378ad27592fd867f8aeb5f3ecfa4",
   "files": {
     ".codex-plugin/plugin.json": "d2b66330a1cac034a47fb07cdbb3651f594afd15b9c5fcd059938f1b0723cf52",
     "README.txt": "ced04a19984a797999e48395db0ec0c42efbbfbb9c0570d2a1f8034b4d894bf0",
     "bin/reachable-mcp": "62ffabe0136de2e82cdca3267a8a2a68536830b52411b0f5c9fe402e801c50cb",
+    "bin/reachable-setup": "dac33505925a935cd4f1c8e65f9c7f34feecc26a71875fb7f50ca6e26b615afc",
     "scripts/doctor.sh": "f1eca460f8e23afc21a92bd9b60736b4193d671ff701f684c676a10ce8d32cc7",
     "scripts/help.sh": "79fc8232b112b834ff29fb81ad4739d7b702410eb401941eb75d54e5cb0c7ff3",
     "scripts/install-plugin.sh": "769ad8beedf78661e05fe62d0f9d4eda87bb0ab115912e3c9c39127dc3fc19e0",
@@ -20,7 +21,7 @@
     "scripts/status.sh": "39f30f47168cb372ed255d9f1e3b69f95ee3d1c2382124683ca83eadd3c1e819",
     "scripts/uninstall.sh": "6773dbc13b397a21f2425ead63939b253c305904bbec3406e580277fd12d7f15",
     "scripts/verify-content.sh": "4c3dcfe5091fb55ac23d2612ff9f23cbb61ae4e58bcdb173e714c6c1be999b0f",
-    "skills/reachable-setup/SKILL.md": "cc230c655952ee9eef68953b3873dabe0554ae3e76fd945a79cb5533efcce9ee",
+    "skills/reachable-setup/SKILL.md": "484565454797e2b2b9e2047978690eca433ffe39e234c1edf749998415cbc9a0",
     "skills/reachable/SKILL.md": "e1ec11ea4cf2122832987714ac4fa3d644da0c3edde6d67a3136b12e909ce573"
   },
   "schema_version": 1

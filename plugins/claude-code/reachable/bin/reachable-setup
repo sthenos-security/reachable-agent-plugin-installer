@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+set -eu
+script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+package_root="$(dirname "$script_dir")"
+setup="$package_root/scripts/setup.sh"
+if [ ! -x "$setup" ]; then
+    echo "reachable: packaged setup wrapper missing or not executable: $setup" >&2
+    exit 127
+fi
+exec "$setup" "$@"
