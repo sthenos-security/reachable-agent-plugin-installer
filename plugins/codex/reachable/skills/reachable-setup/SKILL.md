@@ -1,7 +1,7 @@
 ---
 name: reachable-setup
 description: "Run the Sthenos Security reachable setup command for this workspace. Use when the user types reachable: setup, reachable:setup, or asks to set up the reachable security plugin; do not treat reachable as a repository name."
-version: 1.0.0b197
+version: 1.0.0b198
 
 ---
 
@@ -62,4 +62,4 @@ the remedi ate section in the same broker. The normal next
 prompts after setup are `reachable: doctor`, `reachable: status`, and
 `reachable: remediation status`.
 
-Version: 1.0.0b197
+Version: 1.0.0b198

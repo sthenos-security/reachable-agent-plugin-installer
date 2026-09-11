@@ -96,4 +96,4 @@ Use `reachable: doctor --configure` for changes.
 ## Version
 
 Plugin trees on `main` match the signed adapter for the current public release
-(for example `1.0.0b197`). Content pins live in `reachable-skill-manifest.json`.
+(for example `1.0.0b198`). Content pins live in `reachable-skill-manifest.json`.
