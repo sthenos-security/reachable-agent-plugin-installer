@@ -1,4 +1,4 @@
-REACHABLE claude_code adapter
+REACHABLE adapter for Claude Code
 
 This wrapper is a thin plugin installer package. It does not contain scanner logic.
 It installs the REACHABLE agent wrapper into the agent. Full runtime setup happens only when the user runs reachable: setup.

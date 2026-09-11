@@ -18,6 +18,7 @@ from pathlib import Path
 ROOT = Path(sys.argv[1]).resolve()
 MANIFEST_NAME = "reachable-skill-manifest.json"
 EXCLUDED = {MANIFEST_NAME, "reachable-plugin.json"}
+OVERLAY_NAME = ".gate1-overlay-files"
 manifest_path = ROOT / MANIFEST_NAME
 plugin_path = ROOT / "reachable-plugin.json"
 if not manifest_path.is_file():
@@ -34,12 +35,22 @@ if not isinstance(expected_hash, str) or not expected_hash:
     raise SystemExit("content manifest content_hash is missing")
 if plugin.get("content_hash") != expected_hash:
     raise SystemExit("reachable-plugin.json content_hash does not match the content manifest")
+overlay = {OVERLAY_NAME}
+overlay_path = ROOT / OVERLAY_NAME
+if overlay_path.is_file():
+    for line in overlay_path.read_text(encoding="utf-8").splitlines():
+        rel = line.strip()
+        if rel and not rel.startswith("#"):
+            overlay.add(rel)
+shadow = sorted(set(overlay) & set(expected_files))
+if shadow:
+    raise SystemExit(f"Gate 1 overlay collides with beta-pinned paths: {shadow}")
 actual = {}
 for path in sorted(ROOT.rglob("*")):
     if not path.is_file():
         continue
     rel = path.relative_to(ROOT).as_posix()
-    if rel in EXCLUDED:
+    if rel in EXCLUDED or rel in overlay:
         continue
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     actual[rel] = digest
@@ -52,8 +63,9 @@ if missing or extra or mismatched:
     raise SystemExit(
         f"plugin content drifted: missing={missing} extra={extra} mismatched={mismatched}"
     )
-lines = [f"{rel}:{digest}" for rel, digest in sorted(actual.items())]
-recomputed = hashlib.sha256("\n".join(lines).encode("utf-8")).hexdigest()
+# Recompute from the pin map (not from every on-disk file) so Gate 1 overlay
+# extras do not invalidate the beta content_hash.
+recomputed = hashlib.sha256("\n".join(f"{rel}:{digest}" for rel, digest in sorted(expected_files.items())).encode("utf-8")).hexdigest()
 if recomputed != expected_hash:
     raise SystemExit("content_hash mismatch after recompute")
 print("reachable: plugin content pin verified")

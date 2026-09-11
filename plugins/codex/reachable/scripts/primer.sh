@@ -17,7 +17,9 @@ SETUP MODEL
 The installed agent package is a thin setup adapter. It does not scan by itself.
 When you run reachable: setup, REACHABLE installs or updates the local runtime,
 wires this workspace, starts the local daemon, configures MCP where supported,
-and leaves baseline scans and remediation opt-in.
+installs Gate 1 FAST_TRACK skills (reachable-best-practice + reachable-path-probe)
+into this agent's plugin directory, and leaves baseline scans and remediation
+opt-in.
 
 CONFIGURATION
 -------------
@@ -28,7 +30,11 @@ Use reachable: doctor --configure to open the local browser broker for:
 - GitHub token for source and PR context
 - AI provider keys for better reachability and remediation quality
 - scanner controls
-- remediation policy
+- remediation policy (workspace enable/disable, signal families / vibe-remediation-signals, CI/CD workflow remedi ate lane)
+
+Local plugin remedi ate policy is vibe-coding consent on this workspace. CI
+auto-remediate + Pages is the pipeline product loop. Deep remedi ate (noise
+boundary) is a per-run opt-in, not a broker toggle.
 
 Do not paste secrets into agent chat. The broker stores credentials through the
 local runtime and returns only redacted status to the agent.
@@ -83,5 +89,5 @@ normal in-agent next step.
 - reachctl <command> --help
 
 REACHABLE 1.0 beta
-Copyright (c) 2026 Sthenos Security. All rights reserved.
+Copyright (c) 2026 Sthenos Security, Inc. All rights reserved.
 EOF

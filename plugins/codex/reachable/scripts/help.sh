@@ -12,6 +12,9 @@ reachable: setup
 reachable: doctor
   Show a concise health verdict, setup state, MCP status, and safe log pointers.
   To change tokens or policy, use reachable: doctor --configure.
+  Open the remedi ate section to set signal families, the CI/CD workflow remedi ate
+  lane, and workspace enable/disable. Local plugin policy is not the CI pipeline
+  loop; both share the same pass-scoring rules.
   The local setup broker handles secrets; do not paste them into chat.
 
 reachable: status

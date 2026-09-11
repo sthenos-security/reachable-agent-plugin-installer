@@ -6,7 +6,7 @@
       "claude_code",
       "cursor"
     ],
-    "copyright": "Copyright (c) 2026 Sthenos Security. All rights reserved.",
+    "copyright": "Copyright (c) 2026 Sthenos Security, Inc. All rights reserved.",
     "entrypoints": {
       "cli": "reachctl vibe",
       "hook_check": "reachctl hook-check",
@@ -45,20 +45,20 @@
     },
     "name": "reachable-plugin-installer",
     "plugin_installer": {
-      "copyright": "Copyright (c) 2026 Sthenos Security. All rights reserved.",
+      "copyright": "Copyright (c) 2026 Sthenos Security, Inc. All rights reserved.",
       "curl_path_installs_agent_wrapper_only": true,
       "display_name": "REACHABLE",
       "name": "reachable-plugin-installer",
-      "publisher": "Sthenos Security",
+      "publisher": "Sthenos Security, Inc.",
       "user_prompt": "reachable: setup"
     },
-    "publisher": "Sthenos Security",
+    "publisher": "Sthenos Security, Inc.",
     "schema_version": 1,
-    "version": "1.0.0b178"
+    "version": "1.0.0b197"
   },
-  "content_hash": "9b90cee52dd90f26725f2bda61c7dc7f6c18523dcf9dccce771dcdb28800fda1",
+  "content_hash": "420f258f375cd785ded8b94121475b2400e3d71ff80ea096fb7af2e1a61aa077",
   "content_manifest": "reachable-skill-manifest.json",
   "package": "reachable-codex-adapter",
   "schema_version": 1,
-  "version": "1.0.0b178"
+  "version": "1.0.0b197"
 }

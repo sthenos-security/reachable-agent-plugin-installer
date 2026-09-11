@@ -5,12 +5,14 @@ package_root="$(dirname "$script_dir")"
 agent="claude_code"
 workspace="${REACHABLE_WORKSPACE:-$(pwd)}"
 target="${REACHABLE_CLAUDE_CODE_PLUGIN_DIR:-$HOME/.claude/plugins/reachable}"
-case "$target" in
-  /tmp/*|/private/tmp/*|/var/folders/*)
-    echo "Refusing to install reachable plugin installer into a temporary directory: $target" >&2
-    exit 1
-    ;;
-esac
+if [ -z "${REACHABLE_CLAUDE_CODE_PLUGIN_DIR:-}" ]; then
+  case "$target" in
+    /tmp/*|/private/tmp/*|/var/folders/*)
+      echo "Refusing to install reachable plugin installer into a temporary directory: $target" >&2
+      exit 1
+      ;;
+  esac
+fi
 if [ ! -f "$package_root/reachable-plugin.json" ]; then
   echo "reachable plugin installer package metadata missing: $package_root/reachable-plugin.json" >&2
   exit 1

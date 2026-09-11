@@ -1,7 +1,7 @@
 ---
 name: reachable-setup
 description: "Run the Sthenos Security reachable setup command for this workspace. Use when the user types reachable: setup, reachable:setup, or asks to set up the reachable security plugin; do not treat reachable as a repository name."
-version: 1.0.0b178
+version: 1.0.0b197
 
 ---
 
@@ -56,9 +56,10 @@ After setup completes, report only the high-level result:
 
 Use `reachable: doctor` for health checks. If the user asks to add, rotate, or
 reconfigure tokens, run `reachable: doctor --configure` so the browser broker
-handles secrets. If the user asks to configure scanner or
-remediation, open the remediation section in the same broker. The normal next
+handles secrets. If the user asks to configure scanner controls or remedi ate
+options (signal families, CI/CD workflow remedi ate lane, enable/disable), open
+the remedi ate section in the same broker. The normal next
 prompts after setup are `reachable: doctor`, `reachable: status`, and
 `reachable: remediation status`.
 
-Version: 1.0.0b178
+Version: 1.0.0b197

@@ -1,16 +1,16 @@
 {
   "algorithm": "sha256",
-  "content_hash": "9b90cee52dd90f26725f2bda61c7dc7f6c18523dcf9dccce771dcdb28800fda1",
+  "content_hash": "420f258f375cd785ded8b94121475b2400e3d71ff80ea096fb7af2e1a61aa077",
   "files": {
-    ".codex-plugin/plugin.json": "d2b66330a1cac034a47fb07cdbb3651f594afd15b9c5fcd059938f1b0723cf52",
-    "README.txt": "ced04a19984a797999e48395db0ec0c42efbbfbb9c0570d2a1f8034b4d894bf0",
+    ".codex-plugin/plugin.json": "f0d9f7ae0a0e3e2d68b126ddb8d199a17ce30c27a1eaf6b1b07375d4a7812601",
+    "README.txt": "0e79eabd26e4faa8b245b44e75797ad179ee9cd6057b6051f41b9aa9bce2b471",
     "bin/reachable-mcp": "62ffabe0136de2e82cdca3267a8a2a68536830b52411b0f5c9fe402e801c50cb",
     "bin/reachable-setup": "dac33505925a935cd4f1c8e65f9c7f34feecc26a71875fb7f50ca6e26b615afc",
     "scripts/doctor.sh": "f1eca460f8e23afc21a92bd9b60736b4193d671ff701f684c676a10ce8d32cc7",
-    "scripts/help.sh": "79fc8232b112b834ff29fb81ad4739d7b702410eb401941eb75d54e5cb0c7ff3",
-    "scripts/install-plugin.sh": "769ad8beedf78661e05fe62d0f9d4eda87bb0ab115912e3c9c39127dc3fc19e0",
+    "scripts/help.sh": "993196c2f98b96b356533279f20daefa53e284a4d99ad96fb512f00e729f8d43",
+    "scripts/install-plugin.sh": "60a6aeff765c572b069f63052111f9b2843910d2b7d60485103c507519d16a27",
     "scripts/open-dashboard.sh": "7dccfdf562966726ae318ba258c17109d5f82d8c1a205b80e862f56905e9d864",
-    "scripts/primer.sh": "d8fabd42e3b51265ba85c332af8960b75969c29af1bbac77eb85e1a75d61ac60",
+    "scripts/primer.sh": "3951c5abbc0456fcdfd1e59b606155f274e1f202d9f57d3da11e32ce7bd91588",
     "scripts/proof-status.sh": "f804e93601581d4dd0c6aefb9d7feab59c6b65f581a81a20e6133445dbf0699b",
     "scripts/prune.sh": "391e70cd2e276a38dc72c56163255597c6759d89262c71c3140c010bda918326",
     "scripts/remediation-disable.sh": "dcc611085eaa2675baa96639656235db863950e7231a5adc22fdb9ca13042dfa",
@@ -20,9 +20,9 @@
     "scripts/setup.sh": "08aae12ad07bc10aed49be791bfcf373aa796a1a58bd78aa58311c81dced7dd6",
     "scripts/status.sh": "39f30f47168cb372ed255d9f1e3b69f95ee3d1c2382124683ca83eadd3c1e819",
     "scripts/uninstall.sh": "6773dbc13b397a21f2425ead63939b253c305904bbec3406e580277fd12d7f15",
-    "scripts/verify-content.sh": "4c3dcfe5091fb55ac23d2612ff9f23cbb61ae4e58bcdb173e714c6c1be999b0f",
-    "skills/reachable-setup/SKILL.md": "93f8c3e742c3d734f6606a932a69ac4fc53d23ad1b30df3f9276e89763721034",
-    "skills/reachable/SKILL.md": "e1ec11ea4cf2122832987714ac4fa3d644da0c3edde6d67a3136b12e909ce573"
+    "scripts/verify-content.sh": "d506e556d3ea5b715fb20b9c09cdef2e456be5e765ac86bbfced9a4539bf9558",
+    "skills/reachable-setup/SKILL.md": "2aae2e804bcd090e90ef9fab3b9c40ccbe40c94cb0278e652994cfa147614d5f",
+    "skills/reachable/SKILL.md": "5789bcacefce0e01d12f2629353d5b26fac04f916e43eec6cc7041b31f5c0e00"
   },
   "schema_version": 1
 }

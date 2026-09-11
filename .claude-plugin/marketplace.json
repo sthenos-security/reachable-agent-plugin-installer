@@ -3,14 +3,14 @@
   "name": "sthenos-security",
   "owner": {
     "email": "support@sthenosec.com",
-    "name": "Sthenos Security",
+    "name": "Sthenos Security, Inc.",
     "url": "https://sthenosec.com"
   },
   "plugins": [
     {
       "author": {
         "email": "support@sthenosec.com",
-        "name": "Sthenos Security",
+        "name": "Sthenos Security, Inc.",
         "url": "https://sthenosec.com"
       },
       "category": "security",
@@ -30,7 +30,7 @@
       "name": "reachable",
       "repository": "https://github.com/sthenos-security/reachable-agent-plugin-installer",
       "source": "./plugins/claude-code/reachable",
-      "version": "1.0.0b178"
+      "version": "1.0.0b197"
     }
   ]
 }
