@@ -30,10 +30,10 @@ Use reachable: doctor --configure to open the local browser broker for:
 - GitHub token for source and PR context
 - AI provider keys for better reachability and remediation quality
 - scanner controls
-- remediation policy (workspace enable/disable, signal families / vibe-remediation-signals, CI/CD workflow remedi ate lane)
+- remediation policy (workspace enable/disable, signal families / vibe-remediation-signals, CI/CD workflow remediate lane)
 
-Local plugin remedi ate policy is vibe-coding consent on this workspace. CI
-auto-remediate + Pages is the pipeline product loop. Deep remedi ate (noise
+Local plugin remediate policy is vibe-coding consent on this workspace. CI
+auto-remediate + Pages is the pipeline product loop. Deep remediate (noise
 boundary) is a per-run opt-in, not a broker toggle.
 
 Do not paste secrets into agent chat. The broker stores credentials through the

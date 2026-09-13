@@ -1,7 +1,7 @@
 ---
 name: reachable
 description: Use REACHABLE to set up, verify, and inspect local vibe-coding security remediation from Claude Code, and to enable, disable, or uninstall remediation for this workspace.
-version: 1.0.0b198
+version: 1.0.0b201
 ---
 
 # REACHABLE
@@ -51,10 +51,10 @@ REACHABLE evidence, say so and keep the results separate.
   to add, rotate, replace, or reconfigure tokens, run
   `reachable: doctor --configure` and open the credentials section in the local
   setup broker. The browser broker handles secrets and the chat receives only
-  redacted status. For remedi ate policy, open the remedi ate section: workspace
+  redacted status. For remediate policy, open the remediate section: workspace
   enable/disable, signal families (`vibe-remediation-signals`), and the CI/CD
-  workflow remedi ate lane. Local plugin policy is vibe-coding consent; CI
-  auto-remediate + Pages is the pipeline product loop. Deep remedi ate is a
+  workflow remediate lane. Local plugin policy is vibe-coding consent; CI
+  auto-remediate + Pages is the pipeline product loop. Deep remediate is a
   per-run noise-boundary opt-in, not a broker toggle.
 - `reachable: status`: report the current workspace integration status in
   agent-safe form.
@@ -99,7 +99,7 @@ If `remediation.rule_a_damage.detected` is true (also on
   was rolled back;
 - do not treat that pass as a successful fix even if some findings closed on
   the candidate;
-- note that remedi ate **stops the loop** after demonstrated damage
+- note that remediate **stops the loop** after demonstrated damage
   (`stopped_loop` / `rule_a_damage_stopped_loop`) so it does not rescan and
   damage-retry the same targets.
 
@@ -123,4 +123,4 @@ When the user asks what MCP exposes, summarize these tools:
 Use the packaged command wrappers internally for execution, but keep user-facing
 responses centered on `reachable: ...` commands rather than shell paths.
 
-Version: 1.0.0b198
+Version: 1.0.0b201

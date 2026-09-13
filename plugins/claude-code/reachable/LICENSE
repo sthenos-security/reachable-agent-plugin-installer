@@ -1,0 +1,10 @@
+REACHABLE Plugin Wrapper
+
+Copyright (c) 2026 Sthenos Security, Inc. All rights reserved.
+
+This plugin wrapper package is proprietary to Sthenos Security, Inc. The full
+license terms are available at https://sthenosec.com/license.
+
+This wrapper does not contain the REACHABLE scanner, daemon, or runtime. The
+runtime is downloaded separately and is licensed under its own proprietary terms
+from Sthenos Security, Inc.

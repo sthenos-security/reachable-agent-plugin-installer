@@ -9,3 +9,5 @@ Preferred install:
 3. Then run reachable: setup inside the agent; reachable: doctor can verify setup afterward.
 
 Browser zip download is debug/recovery only. It only saves the zip; it does not auto-install this package or register anything in your agent.
+
+Public Codex store listing: not currently possible. OpenAI's plugin submission form does not allow local stdio MCP servers, which is the transport this plugin uses. Install from the repo/personal marketplace or with the curl bootstrap instead.
