@@ -4,7 +4,10 @@
     "agents": [
       "codex",
       "claude_code",
-      "cursor"
+      "cursor",
+      "goose",
+      "opencode",
+      "devin"
     ],
     "copyright": "Copyright (c) 2026 Sthenos Security, Inc. All rights reserved.",
     "entrypoints": {
@@ -54,11 +57,11 @@
     },
     "publisher": "Sthenos Security, Inc.",
     "schema_version": 1,
-    "version": "1.0.0b201"
+    "version": "1.0.0b206"
   },
-  "content_hash": "f639169feaad128a6265fea17da66a5fd3fde560b69667803e8901eaaad1c05c",
+  "content_hash": "d311b70e83db6df4d1fe9eaad8fe060c3f9f30786c9750657e7fb89512f6998f",
   "content_manifest": "reachable-skill-manifest.json",
   "package": "reachable-claude-code-adapter",
   "schema_version": 1,
-  "version": "1.0.0b201"
+  "version": "1.0.0b206"
 }
