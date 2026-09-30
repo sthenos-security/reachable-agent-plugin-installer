@@ -1,13 +1,13 @@
 {
   "algorithm": "sha256",
-  "content_hash": "d311b70e83db6df4d1fe9eaad8fe060c3f9f30786c9750657e7fb89512f6998f",
+  "content_hash": "7f6669946d33f7b441dd3d7d881cf814c3b8b48897a833459eb4ce05e8595bff",
   "files": {
-    ".claude-plugin/plugin.json": "b19bef6d02f8e526ee126da02c11ce3748ae704f81568f0a0d6ed9f81496769a",
+    ".claude-plugin/plugin.json": "383179eae09ff173f5613de5f89a7df0890e139052ea4950108db07021f75476",
     ".mcp.json": "5349029e4c08685c389a6181c4ef3bf9bf978afd747106e6eefbaca2969ccc99",
     "LICENSE": "0dc1355bf9137407ef847bc32e317bb20d6e271a3045a66b8e76b1a91848f811",
     "NOTICE": "e6138feb85c380bd5b44a14db0f9d39b4d282e2c22b884c6095a99f5696d130d",
     "README.txt": "1895dc87da0993915d855a234187315d321335fb74c4a78ced48385483f4b787",
-    "bin/reachable-mcp": "62ffabe0136de2e82cdca3267a8a2a68536830b52411b0f5c9fe402e801c50cb",
+    "bin/reachable-mcp": "1fa9f2f3f8190ec5589778b35c70da409ebcecdd32556605e6ea4a7aee8cb2e8",
     "bin/reachable-setup": "dac33505925a935cd4f1c8e65f9c7f34feecc26a71875fb7f50ca6e26b615afc",
     "scripts/doctor.sh": "463d8c936a40ab3188e457a13edd6f7909d73f88dad6a5c264329df6a083e14a",
     "scripts/help.sh": "2c46a8bbe87d151413c156aca00ef30351afb3c1b2939264491c8f310b57bc7d",
@@ -24,8 +24,8 @@
     "scripts/status.sh": "40d4ce05595a23994c5b6c78aaab6e7cb8a3f5bd676300c614da5a7f83e5beba",
     "scripts/uninstall.sh": "8b1dab50b05d8a9c7f920104cddf3c293e4dd866c3b03526cb9bbb2ac25b53e2",
     "scripts/verify-content.sh": "d506e556d3ea5b715fb20b9c09cdef2e456be5e765ac86bbfced9a4539bf9558",
-    "skills/reachable-setup/SKILL.md": "94435da03a0dc617e361a830491aec63e6d19d267ef7b2ddc0839c687634da36",
-    "skills/reachable/SKILL.md": "9e0ed7346102d3f71dac76bb3eb0aaa7546907fad38817afed86e68aa1980047"
+    "skills/reachable-setup/SKILL.md": "adbd7c13134a16490b139f78512e902aea6baa59e6747e1fec16510bb5a2935b",
+    "skills/reachable/SKILL.md": "a971cd01e904e5aa85c0acdb7c35470846ecfbb18eb7b7e6a8ce7114cc8b734c"
   },
   "schema_version": 1
 }
