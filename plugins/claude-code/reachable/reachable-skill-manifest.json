@@ -1,8 +1,8 @@
 {
   "algorithm": "sha256",
-  "content_hash": "392d68d441a9f21972d8cee284fed87d3cf9de78a328c40c654c16d177d35ba8",
+  "content_hash": "04ba1d002efc400227f270bd7c9ebd0955ba4cca8dd25e1f558138b510b04994",
   "files": {
-    ".claude-plugin/plugin.json": "9388ff2003a13620da1885342411ae0bb1e49369c79404aeaca36bd3b23035e0",
+    ".claude-plugin/plugin.json": "f97b5b9c565829e1dd407963a7643d405dc71a7f77510dad97f87418fce2cec0",
     ".mcp.json": "5349029e4c08685c389a6181c4ef3bf9bf978afd747106e6eefbaca2969ccc99",
     "LICENSE": "0dc1355bf9137407ef847bc32e317bb20d6e271a3045a66b8e76b1a91848f811",
     "NOTICE": "e6138feb85c380bd5b44a14db0f9d39b4d282e2c22b884c6095a99f5696d130d",
@@ -24,8 +24,8 @@
     "scripts/status.sh": "40d4ce05595a23994c5b6c78aaab6e7cb8a3f5bd676300c614da5a7f83e5beba",
     "scripts/uninstall.sh": "8b1dab50b05d8a9c7f920104cddf3c293e4dd866c3b03526cb9bbb2ac25b53e2",
     "scripts/verify-content.sh": "d506e556d3ea5b715fb20b9c09cdef2e456be5e765ac86bbfced9a4539bf9558",
-    "skills/reachable-setup/SKILL.md": "04e382b0d71b83420752fe78de695a268799149677093803bf2282c9d5bc82c0",
-    "skills/reachable/SKILL.md": "7c6a4284446649af40f9a0833a83239e8e31aa28f361620be1869e0ec8618fa8"
+    "skills/reachable-setup/SKILL.md": "c702ed21037738df4ac294fa7974e1d1db4c68cb3e7c8ee05b30341fc760c761",
+    "skills/reachable/SKILL.md": "841e35dedd3d9c3f53afa553b5fd584da26cab02721f561237f391c65c423ee5"
   },
   "schema_version": 1
 }

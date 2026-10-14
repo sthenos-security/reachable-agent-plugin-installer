@@ -1,8 +1,8 @@
 {
   "algorithm": "sha256",
-  "content_hash": "8700b8cfaa2f147544b8c16b48ad110d7b34923d69d389ed7543addc4ab4e4e1",
+  "content_hash": "1c2eb3c952d1b2641fff2294caf4a9451b0a066d981205a11a73768ae0798264",
   "files": {
-    ".codex-plugin/plugin.json": "d45f02571f5d3e5438ea2ff5302d264ef8c40852cadaa566047d68fe808764cf",
+    ".codex-plugin/plugin.json": "17f503eb2e423df37f53a14f8984d562cc21e2df7ed8c4286b52cf487b86ba4a",
     "LICENSE": "0dc1355bf9137407ef847bc32e317bb20d6e271a3045a66b8e76b1a91848f811",
     "NOTICE": "e6138feb85c380bd5b44a14db0f9d39b4d282e2c22b884c6095a99f5696d130d",
     "README.txt": "4e6054f326b12cb05069510312abe35ed9f7acecfd79392b1b2a7dd2a07be9ed",
@@ -23,8 +23,8 @@
     "scripts/status.sh": "39f30f47168cb372ed255d9f1e3b69f95ee3d1c2382124683ca83eadd3c1e819",
     "scripts/uninstall.sh": "6773dbc13b397a21f2425ead63939b253c305904bbec3406e580277fd12d7f15",
     "scripts/verify-content.sh": "d506e556d3ea5b715fb20b9c09cdef2e456be5e765ac86bbfced9a4539bf9558",
-    "skills/reachable-setup/SKILL.md": "3a8be1d9f812b864a695ba8b0dccca100f9a708577e5c61e27bcf2ea1aaa986c",
-    "skills/reachable/SKILL.md": "b9a08a80c799df60634adcae5222214d12d3c2d39c0a191c54755db2bef9663f"
+    "skills/reachable-setup/SKILL.md": "1561d526e1036c13fab12e50d495dae4a067ce5b89d7e2c85fbd04b794fc6e85",
+    "skills/reachable/SKILL.md": "677eccaa30417c04610db1837d109ca1557a123fed648416996579a15b4eacb0"
   },
   "schema_version": 1
 }
