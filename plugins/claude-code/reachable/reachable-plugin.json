@@ -57,11 +57,11 @@
     },
     "publisher": "Sthenos Security, Inc.",
     "schema_version": 1,
-    "version": "1.0.0b209"
+    "version": "1.0.0b219"
   },
-  "content_hash": "7f6669946d33f7b441dd3d7d881cf814c3b8b48897a833459eb4ce05e8595bff",
+  "content_hash": "392d68d441a9f21972d8cee284fed87d3cf9de78a328c40c654c16d177d35ba8",
   "content_manifest": "reachable-skill-manifest.json",
   "package": "reachable-claude-code-adapter",
   "schema_version": 1,
-  "version": "1.0.0b209"
+  "version": "1.0.0b219"
 }
