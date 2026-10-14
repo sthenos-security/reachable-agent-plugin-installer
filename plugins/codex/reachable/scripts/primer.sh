@@ -48,6 +48,9 @@ AGENT COMMANDS
 - reachable: doctor
 - reachable: doctor --configure
 - reachable: status
+- reachable: baseline show
+- reachable: baseline set
+- reachable: baseline override
 - reachable: remediation status
 - reachable: remediation enable
 - reachable: remediation disable

@@ -20,6 +20,15 @@ reachable: doctor
 reachable: status
   Show the current workspace integration status in agent-safe form.
 
+reachable: baseline show
+  Show the confirmed baseline branch and mode for this workspace.
+
+reachable: baseline set
+  Record the repo baseline branch and mode.
+
+reachable: baseline override
+  Set a per-clone baseline override.
+
 reachable: primer
   Show the advanced Vibe Primer for agent setup, token configuration, MCP tools,
   remediation policy, cleanup, and terminal support references.

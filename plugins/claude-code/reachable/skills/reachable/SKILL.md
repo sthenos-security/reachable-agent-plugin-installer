@@ -1,7 +1,7 @@
 ---
 name: reachable
 description: Use REACHABLE to set up, verify, and inspect local vibe-coding security remediation from Claude Code, and to enable, disable, or uninstall remediation for this workspace.
-version: 1.0.0b209
+version: 1.0.0b219
 ---
 
 # REACHABLE
@@ -58,6 +58,10 @@ REACHABLE evidence, say so and keep the results separate.
   per-run noise-boundary opt-in, not a broker toggle.
 - `reachable: status`: report the current workspace integration status in
   agent-safe form.
+- `reachable: baseline show`: show the confirmed baseline branch and mode for
+  this workspace.
+- `reachable: baseline set`: record the repo baseline branch/mode.
+- `reachable: baseline override`: set a per-clone baseline override.
 - `reachable: open dashboard`: open the local dashboard.
 - `reachable: remediation status`: report explicit local remediation policy and
   run state.
@@ -123,4 +127,4 @@ When the user asks what MCP exposes, summarize these tools:
 Use the packaged command wrappers internally for execution, but keep user-facing
 responses centered on `reachable: ...` commands rather than shell paths.
 
-Version: 1.0.0b209
+Version: 1.0.0b219
