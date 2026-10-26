@@ -1,0 +1,22 @@
+REACHABLE root fingerprint (SHA-384 over the enrolled root public
+keys, base64). This is the ONE value you pin on first use.
+
+kvQtc1UxbGgVbWqY9c2LJhmu1LPkiZrUToBo2rhf3/LWnMFn7UIZuI0HilEmrvIC
+
+Compare it against at least one source you obtained independently of
+this package. If two disagree, do not install -- one of them is
+compromised, and which one is not something this file can tell you.
+
+Published at:
+  - https://sthenosec.com/trust
+  - github.com/sthenos-security/reach-dist (README + a dedicated file)
+  - github.com/sthenos-security/reachable-agent-plugin-installer
+  - product documentation
+  - DNS TXT record on sthenosec.com
+  - this module, shipped inside the wheel
+  - the plugin package, as scripts/root-fingerprint.txt
+
+It changes only if the ROOT SET changes. Rotating a release signing
+key, adding a transparency log or revoking a key is a key-list
+version and leaves this value alone -- so a changed fingerprint is
+never routine.

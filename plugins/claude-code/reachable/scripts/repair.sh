@@ -48,19 +48,7 @@ fi
 if [ -n "$bootstrap_bin" ]; then
   exec "$bootstrap_bin" repair --agent claude_code --workspace "$workspace" "$@"
 fi
-reachctl_bin="${REACHABLE_REACHCTL_BIN:-}"
-if [ -n "$reachctl_bin" ]; then
-  if ! "$reachctl_bin" --version >/dev/null 2>&1; then
-    echo "Configured REACHABLE CLI is not healthy: $reachctl_bin" >&2
-    exit 1
-  fi
-elif [ -x "$reachable_home/venv/bin/reachctl" ]; then
-  if "$reachable_home/venv/bin/reachctl" --version >/dev/null 2>&1; then
-    reachctl_bin="$reachable_home/venv/bin/reachctl"
-  fi
-fi
-if [ -z "$reachctl_bin" ]; then
-  echo "REACHABLE CLI not found. Run setup first." >&2
-  exit 1
-fi
-exec "$reachctl_bin" vibe install --agent claude_code --workspace "$workspace" --no-baseline "$@"
+# No fallback.
+echo "REACHABLE: reachable-plugin-bootstrap is not runnable." >&2
+echo "  Run setup again." >&2
+exit 1

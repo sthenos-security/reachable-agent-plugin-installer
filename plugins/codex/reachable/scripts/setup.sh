@@ -3,9 +3,22 @@ set -eu
 script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 package_root="$(dirname "$script_dir")"
 workspace="${REACHABLE_WORKSPACE:-$(pwd)}"
-installer_url="${REACHABLE_INSTALLER_URL:-https://sthenosec.com/download/install.sh}"
+# The IMMUTABLE per-version asset, never the mutable front door.
+#
+# This plugin pins the SHA-384 of one exact install.sh. `/download/install.sh`
+# changes whenever reach-dist changes it -- measured 2026-10-14: 93 commits
+# since January, 7 in the last 90 days -- so pinning against it would break
+# every already-installed plugin on each installer change, and plugins update
+# lazily through marketplaces. The versioned release asset never changes, so
+# the pin always matches.
+#
+# This does NOT freeze the runtime. install.sh is run with --update and no
+# --version, so it resolves "latest" from the signed release manifest and
+# installs the newest wheel. The installer stays at this plugin's version; the
+# product does not. Updating the plugin is only needed to get a newer INSTALLER.
+installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b240/install.sh}"
 release_manifest_url="${REACHABLE_RELEASE_MANIFEST_URL:-https://sthenosec.com/download/manifest.json}"
-verify_installer="${REACHABLE_VERIFY_INSTALLER:-1}"
+installer_sha384="edefb1bf54f62e6d690966ea57375fa7b92e08bbedc5078455d08d7e53f38e715135f63adda127449448b7618cdd17b5"
 verify_plugin_installer="${REACHABLE_VERIFY_PLUGIN_INSTALLER:-1}"
 release_selector="${REACHABLE_RELEASE_SELECTOR:-latest}"
 local_wheel="${REACHABLE_LOCAL_WHEEL:-}"
@@ -84,121 +97,71 @@ if [ "$verify_plugin_installer" != "0" ]; then
   fi
 fi
 tmp="$(mktemp "${TMPDIR:-/tmp}/reachable-install.XXXXXX")"
-verify_dir="$(mktemp -d "${TMPDIR:-/tmp}/reachable-install-verify.XXXXXX")"
-cleanup() { rm -f "$tmp"; rm -rf "$verify_dir"; }
+cleanup() { rm -f "$tmp"; }
 trap cleanup EXIT
 curl -fsSL --connect-timeout "$curl_connect_timeout" --max-time "$curl_archive_timeout" "$installer_url" -o "$tmp"
-if [ "$verify_installer" != "0" ]; then
-  python_bin="${PYTHON:-}"
-  if [ -z "$python_bin" ] && command -v python3 >/dev/null 2>&1; then
-    python_bin="$(command -v python3)"
+# --- L1: verify install.sh by digest, not by signature --------------------
+#
+# The key, the verifier and this script all arrive in the SAME unverified plugin
+# package, so a signature check against a key from that package buys nothing a
+# digest does not. The digest instead:
+#   * defends CDN and release tampering equally,
+#   * prevents rollback equally -- an exact digest is an exact version,
+#   * is immune to signing-key theft,
+#   * needs only a hash tool: no Python, no venv, no network, no sudo,
+#   * behaves identically in CI/CD, on a desktop and on a node.
+# install.sh then does the signed-manifest work, where a real verifier exists.
+#
+# SHA-384 because that is what CNSA 1.0 specifies and what `openssl dgst` runs
+# through the host's validated module in FIPS mode.
+if [ -z "$installer_sha384" ]; then
+  echo "This REACHABLE plugin package was built without an installer digest." >&2
+  echo "It cannot verify the installer, so it refuses to run it." >&2
+  echo "Reinstall the plugin from the signed marketplace release." >&2
+  exit 1
+fi
+installer_actual=""
+if command -v openssl >/dev/null 2>&1; then
+  # Preferred: on a FIPS host this runs in the validated module.
+  installer_actual="$(openssl dgst -sha384 "$tmp" 2>/dev/null | awk '{print $NF}')"
+elif command -v sha384sum >/dev/null 2>&1; then
+  installer_actual="$(sha384sum "$tmp" | awk '{print $1}')"
+elif command -v shasum >/dev/null 2>&1; then
+  installer_actual="$(shasum -a 384 "$tmp" | awk '{print $1}')"
+fi
+if [ -z "$installer_actual" ]; then
+  echo "REACHABLE cannot verify the installer: no SHA-384 tool was found." >&2
+  echo "Install one, then re-run setup:" >&2
+  echo "  Debian/Ubuntu:  sudo apt-get install -y openssl" >&2
+  echo "  Fedora/RHEL:    sudo dnf install -y openssl" >&2
+  echo "  Alpine:         sudo apk add openssl" >&2
+  echo "  macOS:          shasum ships with macOS; check your PATH" >&2
+  exit 1
+fi
+if [ "$installer_actual" != "$installer_sha384" ]; then
+  # Three different causes land here and they need different actions, so the
+  # message names all three instead of asserting the alarming one. Measured
+  # 2026-10-14: sthenosec.com returns its SPA index page with HTTP 200 for any
+  # missing path, and `curl -f` does NOT fail on that -- so "the URL is wrong"
+  # is a routine way to reach this branch, not an exotic one.
+  echo "REACHABLE installer does not match what this plugin was built against." >&2
+  echo "  expected $installer_sha384" >&2
+  echo "  received $installer_actual" >&2
+  echo "" >&2
+  if head -c 64 "$tmp" | grep -qiE "<!doctype html|<html"; then
+    echo "The download is an HTML page, not a shell script. The installer URL is" >&2
+    echo "wrong or is being intercepted by a proxy or captive portal:" >&2
+    echo "  $installer_url" >&2
+  else
+    echo "Most likely, in order:" >&2
+    echo "  1. This plugin is out of date and the installer has moved on." >&2
+    echo "     Update the plugin, then re-run setup." >&2
+    echo "  2. A proxy or CDN served something other than the real installer." >&2
+    echo "  3. The installer was tampered with." >&2
   fi
-  if [ -z "$python_bin" ] && command -v python >/dev/null 2>&1; then
-    python_bin="$(command -v python)"
-  fi
-  if [ -z "$python_bin" ]; then
-    echo "REACHABLE installer verification requires python; set REACHABLE_VERIFY_INSTALLER=0 only for local artifact proof." >&2
-    exit 1
-  fi
-  if ! command -v cosign >/dev/null 2>&1; then
-    echo "REACHABLE installer verification requires cosign; install cosign or set REACHABLE_VERIFY_INSTALLER=0 only for local artifact proof." >&2
-    exit 1
-  fi
-  "$python_bin" - "$tmp" "$installer_url" "$release_manifest_url" "$verify_dir" <<'PY'
-import hashlib
-import json
-from pathlib import Path
-import sys
-import urllib.request
-import urllib.parse
-
-installer_path, installer_url, manifest_url, verify_dir = sys.argv[1], sys.argv[2], sys.argv[3], Path(sys.argv[4])
-
-def timeout_seconds(key, fallback):
-    try:
-        from reachable.core.config import get_timeout
-        return get_timeout(key)
-    except Exception:
-        return fallback
-
-def load_bytes(url):
-    request = urllib.request.Request(url, headers={"User-Agent": "reachable-plugin-installer/1.0"})
-    with urllib.request.urlopen(request, timeout=timeout_seconds("http_archive_download_seconds", 60)) as response:
-        return response.read()
-
-def load_json(url):
-    return json.loads(load_bytes(url).decode("utf-8"))
-
-def write_text(name, value):
-    (verify_dir / name).write_text(value, encoding="utf-8")
-
-def write_bytes(name, value):
-    (verify_dir / name).write_bytes(value)
-
-def resolve_release_manifest(payload, raw_payload):
-    if isinstance(payload.get("install_script_sha256"), str):
-        raise SystemExit("legacy installer checksum manifests are not accepted")
-    if payload.get("kind") == "reachable_plugin_release_manifest":
-        write_bytes("reachable-release-manifest.json", raw_payload)
-        return payload, manifest_url
-    manifest = payload.get("manifest") or {}
-    nested_url = manifest.get("url")
-    if not nested_url:
-        raise SystemExit("download manifest does not expose reachable-release-manifest.json")
-    raw = load_bytes(nested_url)
-    write_bytes("reachable-release-manifest.json", raw)
-    return json.loads(raw.decode("utf-8")), nested_url
-
-def installer_bundle_url(front_payload, release_manifest_url, installer_record):
-    signature = installer_record.get("signature") or {}
-    for key in ("url", "asset_url"):
-        if isinstance(signature.get(key), str):
-            return signature[key]
-    if isinstance(signature.get("asset_name"), str):
-        return urllib.parse.urljoin(release_manifest_url, signature["asset_name"])
-    asset = front_payload.get("install_script_asset") or {}
-    if isinstance(asset.get("url"), str):
-        return f"{asset['url']}.cosign.bundle"
-    if installer_url.startswith(("http://", "https://", "file:")):
-        return f"{installer_url}.cosign.bundle"
-    if isinstance(installer_record.get("path"), str):
-        return urllib.parse.urljoin(release_manifest_url, f"{installer_record['path']}.cosign.bundle")
-    raise SystemExit("release manifest does not expose install.sh cosign bundle")
-
-def release_installer_asset_url(front_payload):
-    asset = front_payload.get("install_script_asset") or {}
-    url = asset.get("url")
-    return url if isinstance(url, str) and url else None
-
-front_payload_bytes = load_bytes(manifest_url)
-front_payload = json.loads(front_payload_bytes.decode("utf-8"))
-release_payload, resolved_release_manifest_url = resolve_release_manifest(front_payload, front_payload_bytes)
-write_text("release-manifest-bundle-url", f"{resolved_release_manifest_url}.cosign.bundle")
-
-installer_record = None
-for record in release_payload.get("installer_artifacts") or []:
-    if record.get("asset_name") == "install.sh" and isinstance(record.get("sha256"), str):
-        installer_record = record
-        break
-if installer_record is None:
-    raise SystemExit("release manifest does not include install.sh checksum")
-
-expected = installer_record["sha256"]
-write_text("installer-bundle-url", installer_bundle_url(front_payload, resolved_release_manifest_url, installer_record))
-actual = hashlib.sha256(open(installer_path, "rb").read()).hexdigest()
-if actual != expected:
-    release_asset_url = release_installer_asset_url(front_payload)
-    if release_asset_url and release_asset_url != installer_url:
-        replacement = load_bytes(release_asset_url)
-        Path(installer_path).write_bytes(replacement)
-        actual = hashlib.sha256(replacement).hexdigest()
-    if actual != expected:
-        raise SystemExit(f"installer checksum mismatch: expected {expected}, got {actual}")
-PY
-  curl -fsSL --connect-timeout "$curl_connect_timeout" --max-time "$curl_archive_timeout" "$(cat "$verify_dir/release-manifest-bundle-url")" -o "$verify_dir/reachable-release-manifest.json.cosign.bundle"
-  cosign verify-blob     --bundle "$verify_dir/reachable-release-manifest.json.cosign.bundle"     --certificate-oidc-issuer https://token.actions.githubusercontent.com     --certificate-identity-regexp '^https://github\.com/sthenos-security/reach-core/\.github/workflows/release[a-z0-9._-]*\.yml@refs/tags/v[0-9]+\.[0-9]+\.[0-9]+(a|b|rc)?[0-9]*$'     "$verify_dir/reachable-release-manifest.json" >/dev/null
-  curl -fsSL --connect-timeout "$curl_connect_timeout" --max-time "$curl_archive_timeout" "$(cat "$verify_dir/installer-bundle-url")" -o "$verify_dir/install.sh.cosign.bundle"
-  cosign verify-blob     --bundle "$verify_dir/install.sh.cosign.bundle"     --certificate-oidc-issuer https://token.actions.githubusercontent.com     --certificate-identity-regexp '^https://github\.com/sthenos-security/reach-core/\.github/workflows/release[a-z0-9._-]*\.yml@refs/tags/v[0-9]+\.[0-9]+\.[0-9]+(a|b|rc)?[0-9]*$'     "$tmp" >/dev/null
+  echo "" >&2
+  echo "Setup stops here either way. It will not run an installer it cannot verify." >&2
+  exit 1
 fi
 export REACHABLE_INSTALLER_AGENT_SETUP="${REACHABLE_INSTALLER_AGENT_SETUP:-1}"
 export REACHABLE_INSTALLER_SUMMARY="${REACHABLE_INSTALLER_SUMMARY:-compact}"
@@ -228,19 +191,9 @@ fi
 if [ -n "$bootstrap_bin" ]; then
   exec "$bootstrap_bin" setup --agent codex --workspace "$workspace" --installer-url "$installer_url" --release "$release_selector" $bootstrap_install_args "$@"
 fi
-reachctl_bin="${REACHABLE_REACHCTL_BIN:-}"
-if [ -n "$reachctl_bin" ]; then
-  if ! "$reachctl_bin" --version >/dev/null 2>&1; then
-    echo "Configured REACHABLE CLI is not healthy: $reachctl_bin" >&2
-    exit 1
-  fi
-elif [ -x "$reachable_home/venv/bin/reachctl" ]; then
-  if "$reachable_home/venv/bin/reachctl" --version >/dev/null 2>&1; then
-    reachctl_bin="$reachable_home/venv/bin/reachctl"
-  fi
-fi
-if [ -z "$reachctl_bin" ]; then
-  echo "REACHABLE CLI not found after installation" >&2
-  exit 1
-fi
-exec "$reachctl_bin" vibe install --agent codex --workspace "$workspace" --no-baseline "$@"
+# The normal path uses reachable-plugin-bootstrap, which install.sh provides.
+# No fallback: a missing bootstrap is a failed install, not an opportunity to
+# re-run a different command.
+echo "REACHABLE: reachable-plugin-bootstrap is not runnable." >&2
+echo "  install.sh provides reachable-plugin-bootstrap; its absence means the install did not complete." >&2
+exit 1

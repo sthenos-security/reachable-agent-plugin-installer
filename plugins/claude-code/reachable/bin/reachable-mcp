@@ -5,21 +5,46 @@ set -eu
 script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 package_root="$(dirname "$script_dir")"
 
-if command -v reachctl >/dev/null 2>&1; then
-    exec reachctl vibe mcp serve "$@"
+# Resolve the runtime the same way setup.sh does. PATH alone is not enough:
+# the runtime installs to $HOME/.reachable/venv/bin, which is NOT on PATH by
+# default, so a PATH-only check would re-run setup on EVERY MCP spawn on a
+# machine that is already correctly installed.
+reachable_home="${REACHABLE_HOME:-$HOME/.reachable}"
+resolve_reachctl() {
+    if [ -n "${REACHABLE_REACHCTL_BIN:-}" ] && [ -x "${REACHABLE_REACHCTL_BIN}" ]; then
+        reachctl_bin="${REACHABLE_REACHCTL_BIN}"
+        return 0
+    fi
+    if command -v reachctl >/dev/null 2>&1; then
+        reachctl_bin="$(command -v reachctl)"
+        return 0
+    fi
+    if [ -x "$reachable_home/venv/bin/reachctl" ]; then
+        reachctl_bin="$reachable_home/venv/bin/reachctl"
+        return 0
+    fi
+    return 1
+}
+
+if resolve_reachctl; then
+    exec "$reachctl_bin" vibe mcp serve "$@"
 fi
 
 echo "reachable: runtime not installed; running setup before serving MCP" >&2
 if [ -x "$package_root/scripts/setup.sh" ]; then
     # Setup writes progress to stdout, which would corrupt the protocol stream.
     "$package_root/scripts/setup.sh" >&2 || {
-        echo "reachable: setup failed; cannot serve MCP" >&2
+        echo "reachable: setup did not complete, so the MCP server cannot start." >&2
+        echo "reachable: the setup output above says why. Fix that, then restart" >&2
+        echo "reachable: this agent -- the MCP server starts once the runtime exists." >&2
         exit 1
     }
 fi
 
-if command -v reachctl >/dev/null 2>&1; then
-    exec reachctl vibe mcp serve "$@"
+if resolve_reachctl; then
+    exec "$reachctl_bin" vibe mcp serve "$@"
 fi
-echo "reachable: reachctl still not on PATH after setup; refusing to serve" >&2
+echo "reachable: setup reported success but no reachctl was found at" >&2
+echo "reachable:   $reachable_home/venv/bin/reachctl  (nor on PATH)" >&2
+echo "reachable: run 'reachable: doctor' to see what is missing." >&2
 exit 1
