@@ -1,8 +1,8 @@
 {
   "algorithm": "sha256",
-  "content_hash": "7e438fde0bbddf12b74298675bc153cdfcc1bc4b1f2a76768c2592074c46c270",
+  "content_hash": "dad30bbab83dd7996416d3b570c3ae08d0de6a7c6c328da5b43328799b29f314",
   "files": {
-    ".claude-plugin/plugin.json": "79cb2778a10a8d18b328832036c1635ed4290918fa1f10756ef6342d9ef869ed",
+    ".claude-plugin/plugin.json": "0f1f66708127c0cd4371702759e1961d08f8314db6c29c5741dc98063c94350d",
     ".mcp.json": "5349029e4c08685c389a6181c4ef3bf9bf978afd747106e6eefbaca2969ccc99",
     "LICENSE": "0dc1355bf9137407ef847bc32e317bb20d6e271a3045a66b8e76b1a91848f811",
     "NOTICE": "e6138feb85c380bd5b44a14db0f9d39b4d282e2c22b884c6095a99f5696d130d",
@@ -21,7 +21,7 @@
     "scripts/remediation-status.sh": "3025397d5241ceca92f637162933c389fa736d37c251e24052d040b3c6ce6cae",
     "scripts/repair.sh": "3e0a5b31acafd7d9028158b652e0eacab88c9a8310365c09133652f46cd28568",
     "scripts/root-fingerprint.txt": "69e712e1e6e7eddaa0f3334dd291f39bfaaa5c1409dab58a20fafd02192fa2e6",
-    "scripts/setup.sh": "d935dcb52b62a54f548a2b5b1604fa9884812985f452714b741799f95d82d0f7",
+    "scripts/setup.sh": "2414ab7bb9c0f0b40f54605145e8d17d75e1c136efdc001be6230cf54ee7c52e",
     "scripts/status.sh": "40d4ce05595a23994c5b6c78aaab6e7cb8a3f5bd676300c614da5a7f83e5beba",
     "scripts/uninstall.sh": "8b1dab50b05d8a9c7f920104cddf3c293e4dd866c3b03526cb9bbb2ac25b53e2",
     "scripts/verify-content.sh": "d506e556d3ea5b715fb20b9c09cdef2e456be5e765ac86bbfced9a4539bf9558",
@@ -37,8 +37,8 @@
     "skills/reachable-best-practice/references/remediation-precedence.md": "f2e9908099f12f8e74d3db33c77863b668fa83a50881bfc8db8afbe44350fb04",
     "skills/reachable-best-practice/references/web-security.md": "9818769e6b82a76fb4325aee72ff5fbd654591ab663e70c38bab0caf425fcd5a",
     "skills/reachable-path-probe/SKILL.md": "6e4a2bc61dc242393d07f36b64de243e978d85ca357c31c043532ef974008982",
-    "skills/reachable-setup/SKILL.md": "57ce4d441094f142e1200c5066c81d8e35edfd8728f12c1d13c8be7918e3b26b",
-    "skills/reachable/SKILL.md": "5468a5b66f0d1d9af0e136ffba9d7d94dd1bc5e5a1d92294cc86082662446cce"
+    "skills/reachable-setup/SKILL.md": "8f6d1af944cd49ceb2f0e5a088557c053e4855ba4773859e9cbd4a073c39a8ef",
+    "skills/reachable/SKILL.md": "c682f609551446af77dd924aaee9cd7422266ec6ee1c03396bd1f9f20b1d297a"
   },
   "schema_version": 1
 }
