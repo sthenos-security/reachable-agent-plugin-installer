@@ -57,6 +57,7 @@ AGENT COMMANDS
 - reachable: proof status
 - reachable: open dashboard
 - reachable: uninstall
+- reachable: uninstall --full
 - reachable: prune
 
 reachable: remediation enable changes policy only. No scan is started by that

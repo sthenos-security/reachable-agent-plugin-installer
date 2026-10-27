@@ -16,9 +16,9 @@ workspace="${REACHABLE_WORKSPACE:-$(pwd)}"
 # --version, so it resolves "latest" from the signed release manifest and
 # installs the newest wheel. The installer stays at this plugin's version; the
 # product does not. Updating the plugin is only needed to get a newer INSTALLER.
-installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b243/install.sh}"
+installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b244/install.sh}"
 release_manifest_url="${REACHABLE_RELEASE_MANIFEST_URL:-https://sthenosec.com/download/manifest.json}"
-installer_sha384="edefb1bf54f62e6d690966ea57375fa7b92e08bbedc5078455d08d7e53f38e715135f63adda127449448b7618cdd17b5"
+installer_sha384="e5ccef5c204d352530290c76ca7973e5a4421329ec1b21c394ffbf3d7db21563d68c0695225c2b9cf34fae4f406294a1"
 verify_plugin_installer="${REACHABLE_VERIFY_PLUGIN_INSTALLER:-1}"
 release_selector="${REACHABLE_RELEASE_SELECTOR:-latest}"
 local_wheel="${REACHABLE_LOCAL_WHEEL:-}"

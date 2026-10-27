@@ -1,7 +1,7 @@
 ---
 name: reachable
 description: Use REACHABLE to set up, verify, and inspect local vibe-coding security remediation from Claude Code, and to enable, disable, or uninstall remediation for this workspace.
-version: 1.0.0b243
+version: 1.0.0b244
 ---
 
 # REACHABLE
@@ -12,8 +12,25 @@ status, or turn remediation on or off for the current workspace.
 
 Remediation can be turned off without removing anything: `reachable: remediation
 disable` stops it for this workspace while leaving the runtime, scan history and
-plugin setup in place. `reachable: uninstall` removes REACHABLE-managed wiring
-from this workspace only. Prefer these over telling the user to delete files.
+plugin setup in place. `reachable: uninstall` removes REACHABLE from this
+workspace only; it stays installed on the machine. `reachable: uninstall --full`
+removes it from the machine: agent plugins, MCP server, daemon, and
+`~/.reachable` with scan history and credentials. Prefer these over telling the
+user to delete files.
+
+When the user asks to uninstall REACHABLE without saying which, ask before
+running anything: "Remove it from this repo only, or from this machine
+entirely? Entirely deletes your scan history and credentials." Run
+`reachable: uninstall --full --yes` only after the user chose "entirely", and
+tell them the REACHABLE MCP server in this session stops when they restart the
+agent.
+
+When `reachable: status` reports `setup.required` with `workspace_unregistered`,
+the one next step is `reachable: setup` for this workspace; run it, then check
+status again. `rules.generated: false` is not a setup problem: rules are
+written by the first scan, and setup does not scan by default. Do not guess at
+other causes (empty repo, missing git, missing API key) -- none of them affect
+setup.
 
 REACHABLE is the local source of truth. The plugin is a thin adapter. Do not
 invent scanner results or edit REACHABLE configuration files directly.
@@ -71,8 +88,9 @@ REACHABLE evidence, say so and keep the results separate.
 - `reachable: remediation disable`: disable local remediation policy
   immediately without removing runtime, scan history, or plugin setup.
 - `reachable: proof status`: report MCP proof status.
-- `reachable: uninstall`: remove REACHABLE-managed agent wiring for this
-  workspace.
+- `reachable: uninstall`: remove REACHABLE from this workspace only.
+- `reachable: uninstall --full`: remove REACHABLE from this machine. Ask the
+  user first; it deletes scan history and credentials.
 - `reachable: prune`: clean orphaned REACHABLE-managed plugin files after
   host/plugin uninstall.
 
@@ -127,4 +145,4 @@ When the user asks what MCP exposes, summarize these tools:
 Use the packaged command wrappers internally for execution, but keep user-facing
 responses centered on `reachable: ...` commands rather than shell paths.
 
-Version: 1.0.0b243
+Version: 1.0.0b244

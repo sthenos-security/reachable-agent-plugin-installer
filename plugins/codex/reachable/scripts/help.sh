@@ -51,8 +51,11 @@ reachable: open dashboard
   Open the local dashboard.
 
 reachable: uninstall
-  Remove REACHABLE-managed agent wiring, MCP registration, and workspace setup.
-  Runtime/cache/log removal stays explicit.
+  Remove REACHABLE from this workspace. REACHABLE stays installed on the machine.
+
+reachable: uninstall --full
+  Remove REACHABLE from this machine: agent plugins, MCP server, daemon, and
+  ~/.reachable including scan history and credentials. Asks for confirmation.
 
 reachable: prune
   Clean orphaned REACHABLE-managed plugin files after a host uninstall or stale
