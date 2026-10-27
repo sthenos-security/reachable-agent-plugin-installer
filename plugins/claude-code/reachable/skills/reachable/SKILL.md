@@ -1,7 +1,7 @@
 ---
 name: reachable
 description: Use REACHABLE to set up, verify, and inspect local vibe-coding security remediation from Claude Code, and to enable, disable, or uninstall remediation for this workspace.
-version: 1.0.0b247
+version: 1.0.0b249
 ---
 
 # REACHABLE
@@ -20,10 +20,14 @@ user to delete files.
 
 When the user asks to uninstall REACHABLE without saying which, ask before
 running anything: "Remove it from this repo only, or from this machine
-entirely? Entirely deletes your scan history and credentials." Run
-`reachable: uninstall --full --yes` only after the user chose "entirely", and
-tell them the REACHABLE MCP server in this session stops when they restart the
-agent.
+entirely? Entirely deletes your scan history and credentials." After the user
+chose "entirely", `--full` first prints the list of what it will remove and
+then stops: without a terminal it refuses until told `--export PATH` (a
+.tar.gz of scan history and settings, no credentials) or `--no-export`. Show
+the user that list, ask whether they want the export and where, then run
+`reachable: uninstall --full --yes --export PATH` or
+`reachable: uninstall --full --yes --no-export`, and tell them the REACHABLE
+MCP server in this session stops when they restart the agent.
 
 When `reachable: status` reports `setup.required` with `workspace_unregistered`,
 the one next step is `reachable: setup` for this workspace; run it, then check
@@ -145,4 +149,4 @@ When the user asks what MCP exposes, summarize these tools:
 Use the packaged command wrappers internally for execution, but keep user-facing
 responses centered on `reachable: ...` commands rather than shell paths.
 
-Version: 1.0.0b247
+Version: 1.0.0b249

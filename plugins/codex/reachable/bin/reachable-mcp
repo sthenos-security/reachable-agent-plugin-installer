@@ -30,21 +30,98 @@ if resolve_reachctl; then
     exec "$reachctl_bin" vibe mcp serve "$@"
 fi
 
-echo "reachable: runtime not installed; running setup before serving MCP" >&2
-if [ -x "$package_root/scripts/setup.sh" ]; then
-    # Setup writes progress to stdout, which would corrupt the protocol stream.
-    "$package_root/scripts/setup.sh" >&2 || {
-        echo "reachable: setup did not complete, so the MCP server cannot start." >&2
-        echo "reachable: the setup output above says why. Fix that, then restart" >&2
-        echo "reachable: this agent -- the MCP server starts once the runtime exists." >&2
-        exit 1
-    }
+# No runtime. Answer the host now (MCP-NATIVE-BOOTSTRAP.md §5.1) and install in
+# the background (§5.3), never the other way round.
+log_dir="$reachable_home/logs/plugin-bootstrap"
+mkdir -p "$log_dir"
+setup_log="$log_dir/mcp-launcher-setup.log"
+lock_dir="$reachable_home/.mcp-launcher-setup.lock"
+if [ -f "$lock_dir/pid" ] && ! kill -0 "$(cat "$lock_dir/pid")" 2>/dev/null; then
+    # The setup that held the lock is gone (killed, rebooted); its lock is stale.
+    rm -rf "$lock_dir"
+fi
+launcher_state="setup_running"
+if [ ! -x "$package_root/scripts/setup.sh" ]; then
+    launcher_state="setup_missing"
+    echo "reachable: runtime not installed and $package_root/scripts/setup.sh is missing" >&2
+elif mkdir "$lock_dir" 2>/dev/null; then
+    echo "reachable: runtime not installed; running setup in the background (log: $setup_log)" >&2
+    # The background job gets none of this process's stdio: stdout is the
+    # host's JSON-RPC wire, and a child holding it open keeps the host's pipe
+    # open after this process is gone.
+    (
+        set +e
+        "$package_root/scripts/setup.sh"
+        echo "reachable-mcp launcher: setup exited $?"
+        rm -rf "$lock_dir"
+    ) < /dev/null > "$setup_log" 2>&1 &
+    echo "$!" > "$lock_dir/pid"
+else
+    echo "reachable: runtime not installed; a setup started by another session is running (log: $setup_log)" >&2
 fi
 
-if resolve_reachctl; then
-    exec "$reachctl_bin" vibe mcp serve "$@"
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "reachable: python3 is required to answer the MCP host before REACHABLE is installed." >&2
+    echo "reachable: install python3, then run: reachable: setup" >&2
+    exit 1
 fi
-echo "reachable: setup reported success but no reachctl was found at" >&2
-echo "reachable:   $reachable_home/venv/bin/reachctl  (nor on PATH)" >&2
-echo "reachable: run 'reachable: doctor' to see what is missing." >&2
-exit 1
+export REACHABLE_LAUNCHER_STATE="$launcher_state"
+export REACHABLE_LAUNCHER_LOG="$setup_log"
+exec python3 -I -c '
+import json
+import os
+import sys
+
+state = os.environ["REACHABLE_LAUNCHER_STATE"]
+log = os.environ["REACHABLE_LAUNCHER_LOG"]
+if state == "setup_running":
+    detail = "REACHABLE setup is running in the background. Setup log: " + log + ". When it finishes, restart the agent so it starts the REACHABLE MCP server."
+else:
+    detail = "The REACHABLE plugin package has no scripts/setup.sh, so it cannot install the runtime."
+TEXT = "REACHABLE is not installed on this machine yet. " + detail + " To install or retry, run: reachable: setup"
+TOOL = {
+    "name": "reachable_install_status",
+    "description": "REACHABLE is not installed yet. Reports install progress and the command to finish setup.",
+    "inputSchema": {"type": "object", "properties": {}},
+}
+SUPPORTED_PROTOCOL = "2025-06-18"
+
+
+def send(message):
+    sys.stdout.write(json.dumps(message) + chr(10))
+    sys.stdout.flush()
+
+
+for raw in sys.stdin:
+    raw = raw.strip()
+    if not raw:
+        continue
+    try:
+        request = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        send({"jsonrpc": "2.0", "id": None, "error": {"code": -32700, "message": "parse error: " + str(exc)}})
+        continue
+    if "id" not in request or "method" not in request:
+        continue
+    method = request["method"]
+    if method == "initialize":
+        # params and protocolVersion are optional in JSON-RPC; a host that
+        # sends a minimal initialize used to kill this process with KeyError.
+        params = request.get("params") or {}
+        result = {
+            "protocolVersion": params.get("protocolVersion") or SUPPORTED_PROTOCOL,
+            "capabilities": {"tools": {}},
+            "serverInfo": {"name": "reachable", "version": "not-installed"},
+            "instructions": TEXT,
+        }
+    elif method == "ping":
+        result = {}
+    elif method == "tools/list":
+        result = {"tools": [TOOL]}
+    elif method == "tools/call":
+        result = {"content": [{"type": "text", "text": TEXT}], "isError": True}
+    else:
+        send({"jsonrpc": "2.0", "id": request["id"], "error": {"code": -32601, "message": "method not available before REACHABLE is installed: " + method}})
+        continue
+    send({"jsonrpc": "2.0", "id": request["id"], "result": result})
+'

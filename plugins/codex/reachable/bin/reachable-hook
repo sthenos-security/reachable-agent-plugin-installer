@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+set -u
+event="${1:?usage: reachable-hook <event>}"
+reachable_home="${REACHABLE_HOME:-$HOME/.reachable}"
+reachctl_bin=""
+if [ -n "${REACHABLE_REACHCTL_BIN:-}" ] && [ -x "${REACHABLE_REACHCTL_BIN}" ]; then
+    reachctl_bin="${REACHABLE_REACHCTL_BIN}"
+elif [ -x "$reachable_home/venv/bin/reachctl" ]; then
+    reachctl_bin="$reachable_home/venv/bin/reachctl"
+elif command -v reachctl >/dev/null 2>&1; then
+    reachctl_bin="$(command -v reachctl)"
+fi
+if [ -n "$reachctl_bin" ]; then
+    exec "$reachctl_bin" hook-check --tool=codex --event="$event"
+fi
+[ "$event" = "pre_tool_use" ] || exit 0
+payload="$(cat)"
+case "$payload" in
+    *'/.claude/plugins/'*reachable*'/hooks/'*|*'/.claude/plugins/'*reachable*'/.mcp.json'*|*'/.claude/plugins/'*reachable*'/.claude-plugin/'*|*'/.claude/plugins/'*reachable*'reachable-skill-manifest.json'*) ;;
+    *'/.claude/plugins/'*reachable*) exit 0 ;;
+esac
+echo "REACHABLE is not installed, so this edit cannot be checked and is blocked." >&2
+echo "Repair with 'reachable: doctor' (or 'reachable: setup'), or remove the plugin." >&2
+exit 2
