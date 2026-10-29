@@ -1,7 +1,7 @@
 ---
 name: reachable
 description: Use REACHABLE to set up, verify, and inspect local vibe-coding security remediation from Claude Code, and to enable, disable, or uninstall remediation for this workspace.
-version: 1.0.0b250
+version: 1.0.0b252
 ---
 
 # REACHABLE
@@ -149,4 +149,4 @@ When the user asks what MCP exposes, summarize these tools:
 Use the packaged command wrappers internally for execution, but keep user-facing
 responses centered on `reachable: ...` commands rather than shell paths.
 
-Version: 1.0.0b250
+Version: 1.0.0b252

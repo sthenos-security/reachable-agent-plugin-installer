@@ -16,15 +16,42 @@ workspace="${REACHABLE_WORKSPACE:-$(pwd)}"
 # --version, so it resolves "latest" from the signed release manifest and
 # installs the newest wheel. The installer stays at this plugin's version; the
 # product does not. Updating the plugin is only needed to get a newer INSTALLER.
-installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b250/install.sh}"
+installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b252/install.sh}"
 release_manifest_url="${REACHABLE_RELEASE_MANIFEST_URL:-https://sthenosec.com/download/manifest.json}"
-installer_sha384="05726a98b1c1b82f1516864de8099522adedf61b90ce5cff630c70424ca7c58c3f1ebcee00e41cc26b9e700b10422fed"
+installer_sha384="c9075cac8b6126cbdd911a16b328f4098fb70aefb48b8cf7747e5c633d6b71421b04672360d4783cbab12ce17bb58b50"
 verify_plugin_installer="${REACHABLE_VERIFY_PLUGIN_INSTALLER:-1}"
 release_selector="${REACHABLE_RELEASE_SELECTOR:-latest}"
 local_wheel="${REACHABLE_LOCAL_WHEEL:-}"
+release_channel="${REACHABLE_RELEASE_CHANNEL:-public}"
+candidate_dist_base_url="${REACHABLE_CANDIDATE_DIST_BASE_URL:-}"
 bootstrap_install_args="--skip-install"
 curl_connect_timeout="${REACH_LLM_CONNECT_TIMEOUT:-5}"
 curl_archive_timeout="${REACH_HTTP_ARCHIVE_DOWNLOAD_TIMEOUT:-60}"
+case "$release_channel" in
+  public)
+    if [ -n "$candidate_dist_base_url" ]; then
+      echo "REACHABLE_CANDIDATE_DIST_BASE_URL requires REACHABLE_RELEASE_CHANNEL=candidate." >&2
+      exit 2
+    fi
+    ;;
+  candidate)
+    # Candidate assets are private draft-release assets.  This wrapper is used
+    # only by the hosted release gate: a customer package must never acquire a
+    # token or silently downgrade to public latest while proving candidate N.
+    if [ -z "$candidate_dist_base_url" ]; then
+      echo "Candidate setup requires REACHABLE_CANDIDATE_DIST_BASE_URL." >&2
+      exit 2
+    fi
+    if [ -z "${GITHUB_TOKEN:-}" ]; then
+      echo "Candidate setup requires the CI-only release-assets token in GITHUB_TOKEN." >&2
+      exit 2
+    fi
+    ;;
+  *)
+    echo "REACHABLE_RELEASE_CHANNEL must be public or candidate, got: $release_channel" >&2
+    exit 2
+    ;;
+esac
 if [ -n "${REACHABLE_HOME:-}" ]; then
   if [ -z "${HOME:-}" ]; then
     echo "REACHABLE_HOME is set but HOME is empty; cannot determine agent config home for reachable setup." >&2
@@ -167,15 +194,27 @@ export REACHABLE_INSTALLER_AGENT_SETUP="${REACHABLE_INSTALLER_AGENT_SETUP:-1}"
 export REACHABLE_INSTALLER_SUMMARY="${REACHABLE_INSTALLER_SUMMARY:-compact}"
 export REACHABLE_INSTALL_PROGRESS_INTERVAL="${REACHABLE_INSTALL_PROGRESS_INTERVAL:-60}"
 if [ -n "$local_wheel" ]; then
+  if [ "$release_channel" != "public" ]; then
+    echo "REACHABLE_LOCAL_WHEEL cannot be combined with candidate setup." >&2
+    exit 1
+  fi
   if [ "$release_selector" != "latest" ]; then
     echo "REACHABLE_LOCAL_WHEEL cannot be combined with REACHABLE_RELEASE_SELECTOR=$release_selector" >&2
     exit 1
   fi
   bash "$tmp" --update --vibe --agent codex --repo "$workspace" --no-baseline --wheel "$local_wheel"
 elif [ "$release_selector" != "latest" ]; then
-  bash "$tmp" --update --vibe --agent codex --repo "$workspace" --no-baseline --version "$release_selector"
+  if [ "$release_channel" = "candidate" ]; then
+    bash "$tmp" --update --vibe --agent codex --repo "$workspace" --no-baseline --version "$release_selector" --channel candidate --dist-base-url "$candidate_dist_base_url"
+  else
+    bash "$tmp" --update --vibe --agent codex --repo "$workspace" --no-baseline --version "$release_selector"
+  fi
 else
-  bash "$tmp" --update --vibe --agent codex --repo "$workspace" --no-baseline
+  if [ "$release_channel" = "candidate" ]; then
+    bash "$tmp" --update --vibe --agent codex --repo "$workspace" --no-baseline --channel candidate --dist-base-url "$candidate_dist_base_url"
+  else
+    bash "$tmp" --update --vibe --agent codex --repo "$workspace" --no-baseline
+  fi
 fi
 bootstrap_bin="${REACHABLE_BOOTSTRAP_BIN:-}"
 if [ -n "$bootstrap_bin" ]; then
