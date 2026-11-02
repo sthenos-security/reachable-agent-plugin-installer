@@ -1,7 +1,7 @@
 ---
 name: reachable
 description: Use REACHABLE to set up, verify, and inspect local vibe-coding security remediation from Codex, and to enable, disable, or uninstall remediation for this workspace.
-version: 1.0.0b252
+version: 1.0.0b260
 ---
 
 # REACHABLE
@@ -71,8 +71,11 @@ REACHABLE evidence, say so and keep the results separate.
 - `reachable: doctor`: report the verdict plus summary fields. If the user asks
   to add, rotate, replace, or reconfigure tokens, run
   `reachable: doctor --configure` and open the credentials section in the local
-  setup broker. The browser broker handles secrets and the chat receives only
-  redacted status. For remediate policy, open the remediate section: workspace
+  setup broker when the installed runtime can open it. The browser broker
+  handles secrets and the chat receives only redacted status. If opening fails,
+  report the failure; do not claim a connection was saved or invent a host
+  browser action. Browser confirmation cannot approve an initial install.
+  For remediate policy, open the remediate section: workspace
   enable/disable, signal families (`vibe-remediation-signals`), and the CI/CD
   workflow remediate lane. Local plugin policy is vibe-coding consent; CI
   auto-remediate + Pages is the pipeline product loop. Deep remediate is a
@@ -149,4 +152,4 @@ When the user asks what MCP exposes, summarize these tools:
 Use the packaged command wrappers internally for execution, but keep user-facing
 responses centered on `reachable: ...` commands rather than shell paths.
 
-Version: 1.0.0b252
+Version: 1.0.0b260

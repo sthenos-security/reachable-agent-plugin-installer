@@ -1,19 +1,19 @@
 {
   "algorithm": "sha256",
-  "content_hash": "a30261293ada4372d90f7cda555f0c6ea0bbb445c8740a6c67a6cce8e43223eb",
+  "content_hash": "9020d1ec35626306c160de299fc97da1d219697c1b833e31b83a79c67da73262",
   "files": {
-    ".codex-plugin/plugin.json": "fc091074f067740244ab64035f1117bda763af3dfb0e52f2ff0ad543029ac53f",
+    ".codex-plugin/plugin.json": "142f088cbdad73fada1ed816040745873a41256d5d83c540bec93617cda611a7",
     "LICENSE": "0dc1355bf9137407ef847bc32e317bb20d6e271a3045a66b8e76b1a91848f811",
     "NOTICE": "e6138feb85c380bd5b44a14db0f9d39b4d282e2c22b884c6095a99f5696d130d",
     "README.txt": "4e6054f326b12cb05069510312abe35ed9f7acecfd79392b1b2a7dd2a07be9ed",
     "bin/reachable-hook": "d174278b88ca2386bcc76e89226284aa9c4febb9515e2d3d1a6600f00a6c0947",
     "bin/reachable-mcp": "77c9b11dbbdc8ddecf13efcbbfa237f6b653852120dc8d51cdd045709bace3c5",
     "bin/reachable-setup": "dac33505925a935cd4f1c8e65f9c7f34feecc26a71875fb7f50ca6e26b615afc",
-    "scripts/doctor.sh": "f1eca460f8e23afc21a92bd9b60736b4193d671ff701f684c676a10ce8d32cc7",
+    "scripts/doctor.sh": "c93c6d60f8f6c68358ab6f56a56f21a09035d2d6aebb18c96db21be1e84f03c0",
     "scripts/help.sh": "937c8189cb5537fc2defb6ff37881574f396d4711c3fd2ede6d415d2ccc58ca4",
     "scripts/install-plugin.sh": "60a6aeff765c572b069f63052111f9b2843910d2b7d60485103c507519d16a27",
     "scripts/open-dashboard.sh": "7dccfdf562966726ae318ba258c17109d5f82d8c1a205b80e862f56905e9d864",
-    "scripts/primer.sh": "3513f3bd40d40c40d9ee15db336cbd83ba8adec03c4f2fd19c927cb3bb2b74df",
+    "scripts/primer.sh": "a8dd6e4c25617ead22611e9385bed50cea30160a84b06c0576760b88517ae72f",
     "scripts/proof-status.sh": "f804e93601581d4dd0c6aefb9d7feab59c6b65f581a81a20e6133445dbf0699b",
     "scripts/prune.sh": "391e70cd2e276a38dc72c56163255597c6759d89262c71c3140c010bda918326",
     "scripts/remediation-disable.sh": "dcc611085eaa2675baa96639656235db863950e7231a5adc22fdb9ca13042dfa",
@@ -21,7 +21,7 @@
     "scripts/remediation-status.sh": "3025397d5241ceca92f637162933c389fa736d37c251e24052d040b3c6ce6cae",
     "scripts/repair.sh": "a85731551bdaae48e7be262655f2bf0e6f6ce30e127b939f0f00f980f3e70301",
     "scripts/root-fingerprint.txt": "69e712e1e6e7eddaa0f3334dd291f39bfaaa5c1409dab58a20fafd02192fa2e6",
-    "scripts/setup.sh": "7dce3b7b113992ef9018a8e3697490639d1a19356b02df53185cfe1b55437e48",
+    "scripts/setup.sh": "105f311e662aac98a426462eaaffdec00f74efb110984350a6d15b674150bdab",
     "scripts/status.sh": "39f30f47168cb372ed255d9f1e3b69f95ee3d1c2382124683ca83eadd3c1e819",
     "scripts/uninstall.sh": "6773dbc13b397a21f2425ead63939b253c305904bbec3406e580277fd12d7f15",
     "scripts/verify-content.sh": "d506e556d3ea5b715fb20b9c09cdef2e456be5e765ac86bbfced9a4539bf9558",
@@ -37,8 +37,8 @@
     "skills/reachable-best-practice/references/remediation-precedence.md": "f2e9908099f12f8e74d3db33c77863b668fa83a50881bfc8db8afbe44350fb04",
     "skills/reachable-best-practice/references/web-security.md": "9818769e6b82a76fb4325aee72ff5fbd654591ab663e70c38bab0caf425fcd5a",
     "skills/reachable-path-probe/SKILL.md": "6e4a2bc61dc242393d07f36b64de243e978d85ca357c31c043532ef974008982",
-    "skills/reachable-setup/SKILL.md": "4e515734d6020df20861f789a1ca47fa88583525d666d11fbbc957a257efe39a",
-    "skills/reachable/SKILL.md": "c9197d3bb5a06e05692e6043d2ebd6afd305c0a7c19607c01abfab563fcb4120"
+    "skills/reachable-setup/SKILL.md": "5e85f647c4eb2dcac4cf9fb66202ad8799cdab510ce9b3682af03028c3192396",
+    "skills/reachable/SKILL.md": "c87781aa0d7ff2b98e34c0a376301b62100cae7eb8f8aceeb4dd392dee42c8d9"
   },
   "schema_version": 1
 }

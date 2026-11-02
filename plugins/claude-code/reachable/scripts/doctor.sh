@@ -85,6 +85,6 @@ for arg in "$@"; do
   esac
 done
 if [ "$doctor_broker" = "1" ]; then
-  exec "$reachctl_bin" vibe setup open --workspace "$workspace" --source plugin --reason doctor_broker --section "$doctor_section"
+  exec "$reachctl_bin" vibe setup open --workspace "$workspace" --source plugin --reason doctor_broker --section "$doctor_section" --json-output
 fi
 exec "$reachctl_bin" doctor --agent-safe --json "$@"

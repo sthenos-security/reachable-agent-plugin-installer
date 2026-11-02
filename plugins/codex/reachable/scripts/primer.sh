@@ -37,7 +37,11 @@ auto-remediate + Pages is the pipeline product loop. Deep remediate (noise
 boundary) is a per-run opt-in, not a broker toggle.
 
 Do not paste secrets into agent chat. The broker stores credentials through the
-local runtime and returns only redacted status to the agent.
+local runtime and returns only redacted status to the agent. Browser setup
+requires an installed runtime and a working browser opener; it cannot approve
+the initial install. If opening fails, report the failure rather than claiming
+the connection was saved. Do not promise a host browser action unless the host
+actually provides one.
 
 AGENT COMMANDS
 --------------
