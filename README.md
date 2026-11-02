@@ -1,5 +1,11 @@
 # REACHABLE agent plugin installer
 
+[![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-D97757)](.claude-plugin/marketplace.json)
+[![Codex plugin](https://img.shields.io/badge/Codex-plugin-black)](.agents/plugins/marketplace.json)
+[![Status: early access (beta)](https://img.shields.io/badge/status-early%20access%20(beta)-orange)](https://sthenosec.com)
+[![License: proprietary](https://img.shields.io/badge/license-proprietary-lightgrey)](LICENSE)
+[![Sthenos Security](https://img.shields.io/badge/Sthenos%20Security-sthenosec.com-B22222)](https://sthenosec.com)
+
 Requires the REACHABLE runtime (installed by `reachable: setup` or the full
 vibe install). This repository is the public marketplace catalog for REACHABLE:
 
