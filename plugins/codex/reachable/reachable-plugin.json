@@ -57,11 +57,11 @@
     },
     "publisher": "Sthenos Security, Inc.",
     "schema_version": 1,
-    "version": "1.0.0b260"
+    "version": "1.0.0b264"
   },
-  "content_hash": "9020d1ec35626306c160de299fc97da1d219697c1b833e31b83a79c67da73262",
+  "content_hash": "6153df6e24e6a7e0a1a955fa84d56d515ddcf42e56aa311eb992613e0dab9e0c",
   "content_manifest": "reachable-skill-manifest.json",
   "package": "reachable-codex-adapter",
   "schema_version": 1,
-  "version": "1.0.0b260"
+  "version": "1.0.0b264"
 }
