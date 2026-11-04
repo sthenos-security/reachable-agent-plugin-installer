@@ -3,6 +3,66 @@ set -eu
 script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 package_root="$(dirname "$script_dir")"
 workspace="${REACHABLE_WORKSPACE:-$(pwd)}"
+# `--workspace <folder>`: set up the folder the user named, without an
+# environment-variable prefix the agent may not use (AGENT-CLI-BOUNDARY §3.3,
+# onboarding §5 rule 2).
+if [ "$#" -gt 0 ]; then
+  if [ "$#" -eq 2 ] && [ "$1" = "--workspace" ] && [ -d "$2" ]; then
+    workspace="$(CDPATH= cd -- "$2" && pwd)"
+  else
+    echo "usage: setup.sh [--workspace <existing folder>]" >&2
+    exit 2
+  fi
+fi
+# Which folder (onboarding §3.1, C25). Without a folder named, setup uses the
+# folder the agent is open in -- except the home folder, a folder holding
+# several apps, or a folder inside a bigger project: then it asks, installs
+# nothing, and exits 3; the agent asks the user and runs setup again
+# with `--workspace <the chosen folder>`. No guessed app.
+if [ "$#" -eq 0 ] && [ -z "${REACHABLE_WORKSPACE:-}" ]; then
+  reachable_is_app() {
+    if [ -e "$1/.git" ]; then return 0; fi
+    for reachable_manifest in package.json pyproject.toml setup.py requirements.txt go.mod Cargo.toml pom.xml build.gradle build.gradle.kts Gemfile composer.json; do
+      if [ -f "$1/$reachable_manifest" ]; then return 0; fi
+    done
+    return 1
+  }
+  here="$(CDPATH= cd -- "$workspace" && pwd -P)"
+  home_dir="$(CDPATH= cd -- "${HOME:-/}" 2>/dev/null && pwd -P || echo "${HOME:-/}")"
+  apps=""
+  app_count=0
+  for candidate in "$here"/*/; do
+    [ -d "$candidate" ] || continue
+    candidate="${candidate%/}"
+    if reachable_is_app "$candidate"; then
+      apps="$apps
+  - $candidate"
+      app_count=$((app_count + 1))
+    fi
+  done
+  if [ "$here" = "$home_dir" ] || { [ "$app_count" -gt 1 ] && ! reachable_is_app "$here"; }; then
+    if [ "$app_count" -eq 0 ]; then
+      echo "Which app should Reachable check? I found no app directly in $here."
+      echo "Open your agent in your app's folder, then run setup again."
+    else
+      echo "Which app should Reachable check?$apps"
+      echo "(For the agent: ask the user to pick one, then run this setup again with --workspace and that folder.)"
+    fi
+    exit 3
+  fi
+  project=""
+  if command -v git >/dev/null 2>&1; then
+    project="$(git -C "$here" rev-parse --show-toplevel 2>/dev/null || true)"
+  fi
+  if [ -n "$project" ]; then
+    project="$(CDPATH= cd -- "$project" && pwd -P)"
+  fi
+  if [ -n "$project" ] && [ "$project" != "$here" ] && [ "$project" != "$home_dir" ]; then
+    echo "This folder is part of a bigger project. Check just $(basename "$here"), or the whole project $project? Most people pick the whole project."
+    echo "(For the agent: ask the user, then run this setup again with --workspace and the chosen folder.)"
+    exit 3
+  fi
+fi
 # The IMMUTABLE per-version asset, never the mutable front door.
 #
 # This plugin pins the SHA-384 of one exact install.sh. `/download/install.sh`
@@ -16,9 +76,9 @@ workspace="${REACHABLE_WORKSPACE:-$(pwd)}"
 # --version, so it resolves "latest" from the signed release manifest and
 # installs the newest wheel. The installer stays at this plugin's version; the
 # product does not. Updating the plugin is only needed to get a newer INSTALLER.
-installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b265/install.sh}"
+installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b267/install.sh}"
 release_manifest_url="${REACHABLE_RELEASE_MANIFEST_URL:-https://sthenosec.com/download/manifest.json}"
-installer_sha384="0e12633a8b9150cacb9d91f6a18db63177322c4c4fa28714435c85a58da7ecb292526ca3e4311640459e2bab3f4c9c60"
+installer_sha384="60dd287f4baaaa6700ee44907ac34fbaec8b5682c8e3c6b010089545cfcd752e251a86e516222e92fc9f0105c59ee75d"
 verify_plugin_installer="${REACHABLE_VERIFY_PLUGIN_INSTALLER:-1}"
 release_selector="${REACHABLE_RELEASE_SELECTOR:-latest}"
 local_wheel="${REACHABLE_LOCAL_WHEEL:-}"

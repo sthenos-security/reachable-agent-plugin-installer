@@ -64,9 +64,9 @@ AGENT COMMANDS
 - reachable: uninstall --full
 - reachable: prune
 
-reachable: remediation enable changes policy only. No scan is started by that
-command; remediation applies on the next eligible agent event or explicit
-remediation run.
+reachable: remediation enable opens the settings page; you turn fixing on there.
+No scan is started; remediation applies on the next eligible agent event or
+explicit remediation run.
 
 MCP TOOLS
 ---------

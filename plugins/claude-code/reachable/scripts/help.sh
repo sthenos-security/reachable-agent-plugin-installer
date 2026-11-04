@@ -1,65 +1,18 @@
 #!/usr/bin/env sh
 set -eu
+workspace="${REACHABLE_WORKSPACE:-$(pwd)}"
+if [ "$#" -gt 1 ] || { [ "$#" -eq 1 ] && [ "$1" != "more" ]; }; then
+  echo "usage: help.sh [more]" >&2
+  exit 2
+fi
+if [ "${1:-}" = "more" ]; then
 cat <<'EOF'
-reachable connects your coding agent to the local reachable scanner.
-This installed plugin installer package gives the agent a reachable: setup command.
-Full runtime install, workspace wiring, scanner checks, and MCP setup happen
-only after you run reachable: setup from the agent.
+reachable: doctor             check that Reachable itself is working
+reachable: uninstall          remove Reachable from this app (add --full for this computer)
+reachable: prune              clean up Reachable files left behind by an agent uninstall
 
-reachable: setup
-  Install or update reachable and wire this workspace.
-
-reachable: doctor
-  Show a concise health verdict, setup state, MCP status, and safe log pointers.
-  To change tokens or policy, use reachable: doctor --configure.
-  Open the remediate section to set signal families, the CI/CD workflow remediate
-  lane, and workspace enable/disable. Local plugin policy is not the CI pipeline
-  loop; both share the same pass-scoring rules.
-  The local setup broker handles secrets; do not paste them into chat.
-
-reachable: status
-  Show the current workspace integration status in agent-safe form.
-
-reachable: baseline show
-  Show the confirmed baseline branch and mode for this workspace.
-
-reachable: baseline set
-  Record the repo baseline branch and mode.
-
-reachable: baseline override
-  Set a per-clone baseline override.
-
-reachable: primer
-  Show the advanced Vibe Primer for agent setup, token configuration, MCP tools,
-  remediation policy, cleanup, and terminal support references.
-
-reachable: remediation status
-  Show whether remediation is disabled, enabled, running, or blocked.
-
-reachable: remediation enable
-  Enable the local remediation policy for future eligible agent events or
-  explicit remediation runs. This does not start a scan immediately.
-
-reachable: remediation disable
-  Disable local remediation policy immediately. This does not remove runtime,
-  scan history, or plugin setup.
-
-reachable: proof status
-  Show MCP proof and verification state for this workspace.
-
-reachable: open dashboard
-  Open the local dashboard.
-
-reachable: uninstall
-  Remove REACHABLE from this workspace. REACHABLE stays installed on the machine.
-
-reachable: uninstall --full
-  Remove REACHABLE from this machine: agent plugins, MCP server, daemon, and
-  ~/.reachable including scan history and credentials. Asks for confirmation.
-
-reachable: prune
-  Clean orphaned REACHABLE-managed plugin files after a host uninstall or stale
-  upgrade.
+Older names still work: open dashboard, doctor --configure, remediation enable,
+remediation disable.
 
 MCP tools
   vibe.get_posture                Current security posture and ship verdict
@@ -74,4 +27,78 @@ MCP tools
   vibe.open_config                Observe-only Doctor URL from MCP; use reachable: doctor --configure for changes
   vibe.doctor                     Redacted install/debug verdict and log pointers
   vibe.get_help                   Agent-safe MCP help payload
+EOF
+  exit 0
+fi
+reachable_user_home=""
+reachable_uid="$(/usr/bin/id -u 2>/dev/null || id -u 2>/dev/null || true)"
+reachable_user="$(/usr/bin/id -un 2>/dev/null || id -un 2>/dev/null || true)"
+if [ -n "$reachable_uid" ] && [ -x /usr/bin/getent ]; then
+  reachable_user_home="$(/usr/bin/getent passwd "$reachable_uid" | /usr/bin/awk -F: '{print $6}' || true)"
+fi
+if [ -z "$reachable_user_home" ] && [ -n "$reachable_uid" ] && [ -x /bin/getent ]; then
+  reachable_user_home="$(/bin/getent passwd "$reachable_uid" | /usr/bin/awk -F: '{print $6}' || true)"
+fi
+if [ -z "$reachable_user_home" ] && [ -n "$reachable_user" ] && [ -x /usr/bin/dscl ]; then
+  reachable_user_home="$(/usr/bin/dscl . -read "/Users/$reachable_user" NFSHomeDirectory 2>/dev/null | /usr/bin/awk '{print $2}' || true)"
+fi
+if [ -z "$reachable_user_home" ]; then
+  echo "Could not determine the OS account home for reachable setup." >&2
+  exit 1
+fi
+case "$reachable_user_home" in
+  /tmp/*|/private/tmp/*|/var/folders/*)
+    echo "Refusing to install reachable into a temporary HOME: $reachable_user_home" >&2
+    exit 1
+    ;;
+esac
+HOME="$reachable_user_home"
+export HOME
+if [ -n "${REACHABLE_HOME:-}" ]; then
+  reachable_home="${REACHABLE_HOME}"
+else
+  reachable_home="$HOME/.reachable"
+fi
+if [ -z "${PYTHON:-}" ] && [ -x "$reachable_home/venv/bin/python" ]; then
+  PYTHON="$reachable_home/venv/bin/python"
+  export PYTHON
+fi
+reachctl_bin="${REACHABLE_REACHCTL_BIN:-}"
+if [ -n "$reachctl_bin" ]; then
+  if ! "$reachctl_bin" --version >/dev/null 2>&1; then
+    echo "Configured REACHABLE CLI is not healthy: $reachctl_bin" >&2
+    exit 1
+  fi
+elif [ -x "$reachable_home/venv/bin/reachctl" ]; then
+  if "$reachable_home/venv/bin/reachctl" --version >/dev/null 2>&1; then
+    reachctl_bin="$reachable_home/venv/bin/reachctl"
+  fi
+fi
+app_line=""
+if [ -n "$reachctl_bin" ]; then
+  app_line="$("$reachctl_bin" vibe action --workspace "$workspace" 2>/dev/null | head -n 1)" || app_line=""
+fi
+if [ -z "$app_line" ]; then
+  app_line="App: Reachable isn't set up for this folder yet. Say \`reachable: setup\`."
+fi
+cat <<'EOF'
+Reachable makes your agent write safer code, checks your app by itself,
+and can fix what it finds. Your code stays on this computer unless an AI
+key or a Reachable account is connected; `reachable: settings` shows which.
+EOF
+echo ""
+echo "$app_line"
+echo ""
+cat <<'EOF'
+reachable: status             what it found and fixed, and what it's doing now
+reachable: fix                fix the problems it found
+reachable: undo               undo the last Reachable fix
+reachable: check              check now, or as soon as it can
+reachable: action             allow-fixes, report, stop or start
+reachable: open               see results and fixes in your browser
+reachable: settings           add AI or GitHub access, change what it does
+reachable: cost               what checks and fixes have cost
+reachable: report a problem   something not working, or a question
+
+More: reachable: help more
 EOF

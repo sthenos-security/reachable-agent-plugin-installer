@@ -1,7 +1,7 @@
 ---
 name: reachable
 description: Use REACHABLE to set up, verify, and inspect local vibe-coding security remediation from Claude Code, and to enable, disable, or uninstall remediation for this workspace.
-version: 1.0.0b265
+version: 1.0.0b267
 ---
 
 # REACHABLE
@@ -80,26 +80,92 @@ REACHABLE evidence, say so and keep the results separate.
   workflow remediate lane. Local plugin policy is vibe-coding consent; CI
   auto-remediate + Pages is the pipeline product loop. Deep remediate is a
   per-run noise-boundary opt-in, not a broker toggle.
-- `reachable: status`: report the current workspace integration status in
-  agent-safe form.
+- `reachable: status`: run the status wrapper and start your reply with its
+  `answer` lines, exactly and in order; they say what Reachable is doing or
+  found and the one thing to say next. Add details only when asked.
 - `reachable: baseline show`: show the confirmed baseline branch and mode for
   this workspace.
 - `reachable: baseline set`: record the repo baseline branch/mode.
 - `reachable: baseline override`: set a per-clone baseline override.
 - `reachable: open dashboard`: open the local dashboard.
+- `reachable: action`: what Reachable does in this app, and the choices. Run
+  the action wrapper with no argument and relay its output; its first line,
+  "App: [path] · [setting]", is the first line of your answer.
+- `reachable: action report`: just report; Reachable won't change the code
+  ("just report"). Run the action wrapper with `report`.
+- `reachable: action stop`: pause automatic checks and fixes ("stop"). Run the
+  action wrapper with `stop`.
+- `reachable: action start`: watch again ("start"). It starts no check and
+  never turns fixing back on. Run the action wrapper with `start`.
+- `reachable: action ask-first`: keep approving each fix ("keep asking"). Run
+  the action wrapper with `ask-first`.
+When setup's output says it couldn't open the settings page and asks the
+question in chat, ask the user exactly that question. When they answer "fix"
+or "just report", run the record-answer wrapper with `fix` or `report` and
+relay its output. Never answer it for them.
+- `reachable: action allow-fixes`: the user wants Reachable to fix ("allow
+  fixes"). Run the action wrapper with `allow-fixes`: it opens Reachable's
+  settings page, and the user turns fixing on there. Never say fixing is on
+  until the setting line says so.
 - `reachable: remediation status`: report explicit local remediation policy and
   run state.
-- `reachable: remediation enable`: enable local remediation policy for future
-  eligible agent events or explicit remediation runs. Do not claim this starts
-  a scan immediately.
-- `reachable: remediation disable`: disable local remediation policy
-  immediately without removing runtime, scan history, or plugin setup.
+- `reachable: remediation enable`: the same as `reachable: action allow-fixes`.
+  Never run the remediation-enable wrapper yourself (AGENT-CLI-BOUNDARY §3.3).
+  Do not claim this starts a scan.
+- `reachable: remediation disable`: the same as `reachable: action report`.
+- `reachable: cost`: what Reachable's checks have cost in AI, with the cost
+  wrapper; relay its answer.
+- `reachable: report a problem`: ask "What went wrong, in your own words?",
+  then run the report wrapper with `--what "<their words>"`. Relay the summary
+  of what it includes; only after the user says yes, run it again with
+  `--confirmed` and give them the reference it prints.
+- `reachable: open`: open the Reachable page (results and fixes) in the
+  browser with the open wrapper.
+- `reachable: settings`: open the Settings tab (AI and GitHub access, what
+  Reachable does) with the settings wrapper. Keys are typed there, never in chat.
+- `reachable: fix`: fix the problems Reachable found with the fix wrapper and
+  relay its answer. If the app is set to report, it opens the Settings tab;
+  only the user turns fixing on there.
+- `reachable: check`: ask Reachable to check this app with the check wrapper
+  and relay its answer. Never run a scan yourself; "scan", "check my app" and
+  "is my app ok?" mean this command.
+- `reachable: undo`: undo the last Reachable fix with the undo wrapper. If it
+  says the user edited a fixed file since, relay its question exactly; only
+  after the user says yes, run the undo wrapper again with `--confirmed`.
 - `reachable: proof status`: report MCP proof status.
 - `reachable: uninstall`: remove REACHABLE from this workspace only.
-- `reachable: uninstall --full`: remove REACHABLE from this machine. Ask the
-  user first; it deletes scan history and credentials.
+- `reachable: uninstall --full`: remove REACHABLE from this machine; it deletes
+  scan history and credentials.
 - `reachable: prune`: clean orphaned REACHABLE-managed plugin files after
   host/plugin uninstall.
+
+These three remove REACHABLE, so the user runs them: do not run them yourself.
+Give the user the exact command for their own terminal: `bash` and the full,
+quoted path of this plugin's uninstall wrapper (add `--full` for `--full`), or
+of its prune wrapper.
+
+## Plain words
+
+Users rarely type commands. Map what they mean (onboarding C30;
+AGENT-CLI-BOUNDARY §5):
+
+- "scan", "check my app", "is my app ok?": `reachable: check`.
+- "what did it find?", "status": `reachable: status`.
+- "fix it", "remediate": `reachable: fix`.
+- "undo the Reachable fix", "my app broke after the fix": `reachable: undo`.
+- "stop", "start", "just report": `reachable: action stop` / `start` / `report`;
+  "allow fixes", "keep asking": `reachable: action allow-fixes` / `ask-first`.
+- "add a key", "settings": `reachable: settings`.
+- "something's broken", "I have a question": `reachable: report a problem`.
+- "run reachctl …": give the exact command for their own terminal; don't run it.
+- Anything else Reachable-sounding: `reachable: help`.
+
+## Reachable's command line is the user's
+
+Never run `reachctl`, `reachable` or `python -m reachable` yourself, in any
+form, and don't look for their options. Reachable checks by itself as the agent
+changes code. If the user asks you to run one, give them the exact command for
+their own terminal. A shell command that runs Reachable is blocked by its hook.
 
 ## After a remediation run — check what actually shipped
 
@@ -152,4 +218,4 @@ When the user asks what MCP exposes, summarize these tools:
 Use the packaged command wrappers internally for execution, but keep user-facing
 responses centered on `reachable: ...` commands rather than shell paths.
 
-Version: 1.0.0b265
+Version: 1.0.0b267

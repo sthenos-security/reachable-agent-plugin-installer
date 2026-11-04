@@ -49,7 +49,4 @@ if [ -z "$reachctl_bin" ]; then
   echo "REACHABLE CLI not found. Run setup first." >&2
   exit 1
 fi
-"$reachctl_bin" vibe remediation enable --agent auto --human --workspace "$workspace" "$@" >/dev/null
-cat <<'EOF'
-Remediation policy enabled. No scan was started; remediation will apply on the next eligible agent event or explicit remediation run.
-EOF
+exec "$reachctl_bin" vibe action --workspace "$workspace" allow-fixes

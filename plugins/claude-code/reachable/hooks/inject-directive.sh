@@ -89,4 +89,16 @@ print((p.get("cwd") if isinstance(p,dict) else None) or os.getcwd())' 2>/dev/nul
   _record warm_kicked
 fi
 
+# Onboarding §2.2: the first line says, in plain words, that the fast path is
+# on and for which app (its git root, else the session folder). The version
+# stays: this hook reads it from line 1 of the directive file, not from here.
+APP_DIR="$PWD"
+if [[ $HAVE_PY == 1 && -n "$INPUT" ]]; then
+  APP_DIR="$(REACHABLE_GATE1_INPUT="$INPUT" python3 -c 'import json,os
+try: p=json.loads(os.environ["REACHABLE_GATE1_INPUT"])
+except ValueError: p={}
+print((p.get("cwd") if isinstance(p,dict) else None) or os.getcwd())' 2>/dev/null || echo "$PWD")"
+fi
+APP_ROOT="$(git -C "$APP_DIR" rev-parse --show-toplevel 2>/dev/null || echo "$APP_DIR")"
+echo "Reachable: safety skills on for ${APP_ROOT##*/}. Your agent checks its own changes each turn. (directive v$VERSION)"
 cat "$DIRECTIVE"

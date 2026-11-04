@@ -10,11 +10,47 @@ elif [ -x "$reachable_home/venv/bin/reachctl" ]; then
 elif command -v reachctl >/dev/null 2>&1; then
     reachctl_bin="$(command -v reachctl)"
 fi
-if [ -n "$reachctl_bin" ]; then
+if [ "$event" != "pre_tool_use" ]; then
+    [ -n "$reachctl_bin" ] || exit 0
     exec "$reachctl_bin" hook-check --tool=claude-code --event="$event"
 fi
-[ "$event" = "pre_tool_use" ] || exit 0
 payload="$(cat)"
+allow() {
+    # Cursor reads the verdict from stdout and blocks on silence (failClosed).
+    case "$payload" in *'"cursor_version"'*) printf '%s\n' '{"permission":"allow"}' ;; esac
+    exit 0
+}
+case "$payload" in
+    *'"tool_name":"Bash"'*|*'"tool_name": "Bash"'*|*'"tool_name":"Shell"'*|*'"tool_name": "Shell"'*|*'"tool_name":"shell"'*|*'"tool_name": "shell"'*|*'"tool_name":"exec"'*|*'"tool_name": "exec"'*|*'"tool_name":"developer__shell"'*|*'"tool_name": "developer__shell"'*)
+        # AGENT-CLI-BOUNDARY §3.1: the agent's shell command. One that names no
+        # Reachable program, runtime or plugin package passes here, no Python.
+        plugin_root="$(cd "$(dirname "$0")/.." && pwd)"
+        lowered="$(printf '%s' "$payload" | tr '[:upper:]' '[:lower:]')"
+        case "$lowered" in
+            *reach*|*enzo*) ;;
+            *) case "$payload" in *"$reachable_home"*|*"$plugin_root"*) ;; *) allow ;; esac ;;
+        esac
+        # No runtime yet: nothing to protect (case 13).
+        [ -n "$reachctl_bin" ] || allow
+        printf '%s\n' "$payload" | "$reachctl_bin" hook-check --tool=claude-code --event="$event"
+        rc=$?
+        if [ "$rc" -eq 0 ] || [ "$rc" -eq 2 ]; then exit "$rc"; fi
+        # hook-check itself failed (a broken runtime): only the repair scripts
+        # pass, with no arguments, so `reachable: doctor` can fix it (case 12a).
+        for script in setup.sh doctor.sh status.sh help.sh; do
+            for form in "$plugin_root/scripts/$script" "bash $plugin_root/scripts/$script" "sh $plugin_root/scripts/$script"; do
+                case "$payload" in *"\"command\":\"$form\""*|*"\"command\": \"$form\""*) allow ;; esac
+            done
+        done
+        echo "Reachable couldn't check this command (its runtime failed, exit $rc), so it is blocked." >&2
+        echo "Say 'reachable: doctor' to repair Reachable." >&2
+        exit 2
+        ;;
+esac
+if [ -n "$reachctl_bin" ]; then
+    printf '%s\n' "$payload" | "$reachctl_bin" hook-check --tool=claude-code --event="$event"
+    exit $?
+fi
 case "$payload" in
     *'/.agents/plugins/'*reachable*'/hooks/'*|*'/.agents/plugins/'*reachable*'/.mcp.json'*|*'/.agents/plugins/'*reachable*'/.claude-plugin/'*|*'/.agents/plugins/'*reachable*'/.cursor-plugin/'*|*'/.agents/plugins/'*reachable*'/.codex-plugin/'*|*'/.agents/plugins/'*reachable*'reachable-skill-manifest.json'*|*'/.claude/plugins/'*reachable*'/hooks/'*|*'/.claude/plugins/'*reachable*'/.mcp.json'*|*'/.claude/plugins/'*reachable*'/.claude-plugin/'*|*'/.claude/plugins/'*reachable*'/.cursor-plugin/'*|*'/.claude/plugins/'*reachable*'/.codex-plugin/'*|*'/.claude/plugins/'*reachable*'reachable-skill-manifest.json'*|*'/.codex/plugins/'*reachable*'/hooks/'*|*'/.codex/plugins/'*reachable*'/.mcp.json'*|*'/.codex/plugins/'*reachable*'/.claude-plugin/'*|*'/.codex/plugins/'*reachable*'/.cursor-plugin/'*|*'/.codex/plugins/'*reachable*'/.codex-plugin/'*|*'/.codex/plugins/'*reachable*'reachable-skill-manifest.json'*|*'/.config/devin/plugins/'*reachable*'/hooks/'*|*'/.config/devin/plugins/'*reachable*'/.mcp.json'*|*'/.config/devin/plugins/'*reachable*'/.claude-plugin/'*|*'/.config/devin/plugins/'*reachable*'/.cursor-plugin/'*|*'/.config/devin/plugins/'*reachable*'/.codex-plugin/'*|*'/.config/devin/plugins/'*reachable*'reachable-skill-manifest.json'*|*'/.cursor/plugins/'*reachable*'/hooks/'*|*'/.cursor/plugins/'*reachable*'/.mcp.json'*|*'/.cursor/plugins/'*reachable*'/.claude-plugin/'*|*'/.cursor/plugins/'*reachable*'/.cursor-plugin/'*|*'/.cursor/plugins/'*reachable*'/.codex-plugin/'*|*'/.cursor/plugins/'*reachable*'reachable-skill-manifest.json'*) ;;
     *'/.agents/plugins/'*reachable*|*'/.claude/plugins/'*reachable*|*'/.codex/plugins/'*reachable*|*'/.config/devin/plugins/'*reachable*|*'/.cursor/plugins/'*reachable*) exit 0 ;;

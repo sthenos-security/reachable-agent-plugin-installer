@@ -1,7 +1,7 @@
 ---
 name: reachable-setup
 description: "Run the Sthenos Security reachable setup command for this workspace. Use when the user types reachable: setup, reachable:setup, or asks to set up the reachable security plugin; do not treat reachable as a repository name."
-version: 1.0.0b265
+version: 1.0.0b267
 
 ---
 
@@ -37,22 +37,31 @@ for a substitute, and do not run `bin/reachable-mcp` for setup. If the
 wrapper is missing or not executable, stop and tell the user to reinstall the
 Sthenos Security reachable plugin or contact <https://sthenosec.com>.
 
+If setup asks which folder ("Which app should Reachable check?" or "This
+folder is part of a bigger project..."), it installed nothing: ask the user that
+question as written, with the choices it listed, then run the same packaged
+setup wrapper once more with `--workspace "<the folder they chose>"`. Never
+pick the folder yourself.
+
+If setup's summary asks whether Reachable may fix security issues (the
+settings page couldn't be opened), ask the user that question. When they
+answer, run the packaged `record-answer.sh fix` or `record-answer.sh report`
+from the same scripts folder, and relay what it prints.
+
+When Reachable has told you it isn't checking a folder yet and the user said
+yes, set up that folder instead: pass `--workspace "<that folder>"` to the same
+packaged setup wrapper (the folder must exist). Never prefix the wrapper with
+`REACHABLE_WORKSPACE=`; the hook blocks environment prefixes on Reachable.
+
 This setup command may install or upgrade the local reachable runtime through
 the official signed installer, wire the current workspace for `codex`,
 open doctor/broker setup if credentials are needed, and register MCP/status
 where supported. Do not start remediation or a baseline scan unless the user
 explicitly asks for it.
 
-After setup completes, report only the high-level result:
-
-- Installed reachable version
-- Workspace
-- Scanner readiness
-- Agent wiring
-- Monitoring state
-- Baseline scan state
-- Remediation state
-- One next action
+After setup completes, relay the lines setup printed before `Details:`,
+as written and in order (onboarding §2.2). Show the `Details:` lines only if
+the user asks.
 
 In the normal user journey, describe that next action in plain language inside
 the agent (for example, offer to show status or help open local browser setup).
@@ -83,4 +92,4 @@ current plugin can actually perform. Do not offer the proposed Check app action
 until it exists. Offer support for opening the browser securely; only offer a
 host browser action if that host actually provides one.
 
-Version: 1.0.0b265
+Version: 1.0.0b267

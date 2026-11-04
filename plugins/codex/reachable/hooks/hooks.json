@@ -21,7 +21,7 @@
             "type": "command"
           }
         ],
-        "matcher": "apply_patch"
+        "matcher": "apply_patch|Bash"
       }
     ],
     "Stop": [

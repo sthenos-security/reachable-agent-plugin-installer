@@ -21,7 +21,7 @@
             "type": "command"
           }
         ],
-        "matcher": "Write|Edit|MultiEdit"
+        "matcher": "Write|Edit|MultiEdit|Bash"
       }
     ],
     "SessionStart": [
@@ -41,6 +41,17 @@
         "hooks": [
           {
             "command": "\"${CLAUDE_PLUGIN_ROOT}/bin/reachable-hook\" stop",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/bin/reachable-hook\" pre_submit_prompt",
             "timeout": 5,
             "type": "command"
           }
