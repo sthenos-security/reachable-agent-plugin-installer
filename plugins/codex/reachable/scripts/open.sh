@@ -49,4 +49,4 @@ if [ -z "$reachctl_bin" ]; then
   echo "REACHABLE CLI not found. Run setup first." >&2
   exit 1
 fi
-exec "$reachctl_bin" vibe ui --workspace "$workspace" "$@"
+exec "$reachctl_bin" vibe setup open --source cli --reason fixes --section fixes --human --workspace "$workspace" "$@"

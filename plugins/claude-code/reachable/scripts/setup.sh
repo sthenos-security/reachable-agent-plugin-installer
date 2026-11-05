@@ -6,11 +6,18 @@ workspace="${REACHABLE_WORKSPACE:-$(pwd)}"
 # `--workspace <folder>`: set up the folder the user named, without an
 # environment-variable prefix the agent may not use (AGENT-CLI-BOUNDARY §3.3,
 # onboarding §5 rule 2).
+# `--replace-apps-inside` (onboarding §5 rule 4): the user chose to check the
+# whole folder, so apps set up on their own inside it become part of it.
+replace_apps_inside=""
 if [ "$#" -gt 0 ]; then
   if [ "$#" -eq 2 ] && [ "$1" = "--workspace" ] && [ -d "$2" ]; then
     workspace="$(CDPATH= cd -- "$2" && pwd)"
+  elif [ "$#" -eq 3 ] && [ "$1" = "--workspace" ] && [ -d "$2" ] && [ "$3" = "--replace-apps-inside" ]; then
+    workspace="$(CDPATH= cd -- "$2" && pwd)"
+    replace_apps_inside=1
+    set -- "$1" "$2"
   else
-    echo "usage: setup.sh [--workspace <existing folder>]" >&2
+    echo "usage: setup.sh [--workspace <existing folder> [--replace-apps-inside]]" >&2
     exit 2
   fi
 fi
@@ -63,6 +70,31 @@ if [ "$#" -eq 0 ] && [ -z "${REACHABLE_WORKSPACE:-}" ]; then
     exit 3
   fi
 fi
+# Onboarding §5 rule 4: an app set up on its own inside this folder -- asking
+# which to keep, before anything is installed or wired (audit 2026-11-04: not
+# built). Only an installed runtime can have set one up.
+reachable_runtime="${REACHABLE_HOME:-$HOME/.reachable}/venv/bin/reachctl"
+if [ -x "$reachable_runtime" ]; then
+  if ! apps_inside="$("$reachable_runtime" vibe apps-inside --workspace "$workspace")"; then
+    echo "Setup didn't finish: it couldn't read which apps Reachable already checks inside $workspace. Run \`/reachable:setup\` to try again, or say \`reachable: report a problem\`." >&2
+    exit 1
+  fi
+  if [ -n "$apps_inside" ] && [ -z "$replace_apps_inside" ]; then
+    echo "Reachable already checks these apps on their own, inside $workspace:"
+    printf '%s
+' "$apps_inside" | sed 's/^/  - /'
+    echo "Check the whole project $workspace instead (they become part of it), or keep them as they are?"
+    echo "(For the agent: ask the user. Whole project: run this setup again with --workspace and that folder, then --replace-apps-inside. Keep them: stop here; nothing was changed.)"
+    exit 3
+  fi
+  if [ -n "$apps_inside" ]; then
+    printf '%s
+' "$apps_inside" | while IFS= read -r inner; do
+      "$reachable_runtime" vibe uninstall --workspace "$inner" >/dev/null
+      echo "Reachable now checks $inner as part of $workspace."
+    done
+  fi
+fi
 # The IMMUTABLE per-version asset, never the mutable front door.
 #
 # This plugin pins the SHA-384 of one exact install.sh. `/download/install.sh`
@@ -76,7 +108,7 @@ fi
 # --version, so it resolves "latest" from the signed release manifest and
 # installs the newest wheel. The installer stays at this plugin's version; the
 # product does not. Updating the plugin is only needed to get a newer INSTALLER.
-installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b267/install.sh}"
+installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b271/install.sh}"
 release_manifest_url="${REACHABLE_RELEASE_MANIFEST_URL:-https://sthenosec.com/download/manifest.json}"
 installer_sha384="60dd287f4baaaa6700ee44907ac34fbaec8b5682c8e3c6b010089545cfcd752e251a86e516222e92fc9f0105c59ee75d"
 verify_plugin_installer="${REACHABLE_VERIFY_PLUGIN_INSTALLER:-1}"

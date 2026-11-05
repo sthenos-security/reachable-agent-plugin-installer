@@ -25,10 +25,15 @@ case "$payload" in
         # AGENT-CLI-BOUNDARY §3.1: the agent's shell command. One that names no
         # Reachable program, runtime or plugin package passes here, no Python.
         plugin_root="$(cd "$(dirname "$0")/.." && pwd)"
-        lowered="$(printf '%s' "$payload" | tr '[:upper:]' '[:lower:]')"
+        # Match the command, not the folder it runs in: the payload's own
+        # paths (cwd, transcript, workspace roots) are dropped first, so a
+        # folder named "reach…" no longer starts Python on every command
+        # (audit 2026-11-04). A path the sed can't drop only means Python runs.
+        command_part="$(printf '%s' "$payload" | sed -E 's/"(cwd|transcript_path)"[[:space:]]*:[[:space:]]*"[^"]*"//g; s/"workspace_roots"[[:space:]]*:[[:space:]]*\[[^]]*\]//g')"
+        lowered="$(printf '%s' "$command_part" | tr '[:upper:]' '[:lower:]')"
         case "$lowered" in
             *reach*|*enzo*) ;;
-            *) case "$payload" in *"$reachable_home"*|*"$plugin_root"*) ;; *) allow ;; esac ;;
+            *) case "$command_part" in *"$reachable_home"*|*"$plugin_root"*) ;; *) allow ;; esac ;;
         esac
         # No runtime yet: nothing to protect (case 13).
         [ -n "$reachctl_bin" ] || allow

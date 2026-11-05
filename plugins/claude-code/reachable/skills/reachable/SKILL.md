@@ -1,7 +1,7 @@
 ---
 name: reachable
 description: Use REACHABLE to set up, verify, and inspect local vibe-coding security remediation from Claude Code, and to enable, disable, or uninstall remediation for this workspace.
-version: 1.0.0b267
+version: 1.0.0b271
 ---
 
 # REACHABLE
@@ -70,7 +70,7 @@ REACHABLE evidence, say so and keep the results separate.
   agent.
 - `reachable: doctor`: report the verdict plus summary fields. If the user asks
   to add, rotate, replace, or reconfigure tokens, run
-  `reachable: doctor --configure` and open the credentials section in the local
+  `reachable: settings` and open the credentials section in the local
   setup broker when the installed runtime can open it. The browser broker
   handles secrets and the chat receives only redacted status. If opening fails,
   report the failure; do not claim a connection was saved or invent a host
@@ -211,11 +211,11 @@ When the user asks what MCP exposes, summarize these tools:
 - `vibe.get_compliance`: Read-only per-framework compliance evidence pack.
 - `vibe.get_remediation_audit`: What was found, what the agent changed, what remained.
 - `vibe.get_artifact_trust_status`: Signed-artifact trust posture and verification counts.
-- `vibe.open_config`: Observe-only Doctor URL from MCP; use reachable: doctor --configure for changes.
+- `vibe.open_config`: Observe-only Doctor URL from MCP; use reachable: settings for changes.
 - `vibe.doctor`: Redacted install/debug verdict and log pointers.
 - `vibe.get_help`: Agent-safe MCP help payload.
 
 Use the packaged command wrappers internally for execution, but keep user-facing
 responses centered on `reachable: ...` commands rather than shell paths.
 
-Version: 1.0.0b267
+Version: 1.0.0b271

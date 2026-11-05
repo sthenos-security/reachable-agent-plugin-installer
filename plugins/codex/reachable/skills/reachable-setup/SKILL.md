@@ -1,7 +1,7 @@
 ---
 name: reachable-setup
 description: "Run the Sthenos Security reachable setup command for this workspace. Use when the user types reachable: setup, reachable:setup, or asks to set up the reachable security plugin; do not treat reachable as a repository name."
-version: 1.0.0b267
+version: 1.0.0b271
 
 ---
 
@@ -12,6 +12,8 @@ plugin skill commands. Treat the full phrase as the command name. Do not split
 it into words, do not search for a repository named `reachable`, do not set up
 the current application, and do not resolve `reachable` to any local project,
 package, directory, or tool outside this plugin.
+
+Before you run it, tell the user, as written (onboarding §3.1, C18): "Your agent will ask permission to run Reachable's setup. It's safe to choose Yes. If you chose No, just run `/reachable:setup` again."
 
 Run the packaged setup wrapper exactly once. Do not explore the repository
 first, do not inspect plugin files, do not list skill directories, and do not
@@ -48,6 +50,12 @@ settings page couldn't be opened), ask the user that question. When they
 answer, run the packaged `record-answer.sh fix` or `record-answer.sh report`
 from the same scripts folder, and relay what it prints.
 
+If setup says Reachable already checks apps on their own inside the folder,
+it changed nothing: ask the user whether to check the whole project instead or
+keep those apps as they are. For the whole project, run the same packaged setup
+wrapper with `--workspace "<that folder>" --replace-apps-inside`; to keep them,
+stop.
+
 When Reachable has told you it isn't checking a folder yet and the user said
 yes, set up that folder instead: pass `--workspace "<that folder>"` to the same
 packaged setup wrapper (the folder must exist). Never prefix the wrapper with
@@ -80,7 +88,7 @@ status; it does not authorize a scan, watching, or a code edit. Do not claim
 the proposed Check/Watch actions exist until implemented and approved.
 
 Use `reachable: doctor` for health checks. If the user asks to add, rotate, or
-reconfigure tokens, run `reachable: doctor --configure` so the browser broker
+reconfigure tokens, run `reachable: settings` so the browser broker
 handles secrets. If the user asks to configure scanner controls or remediate
 options (signal families, CI/CD workflow remediate lane, enable/disable), open
 the remediate section in the same broker. The normal next
@@ -92,4 +100,4 @@ current plugin can actually perform. Do not offer the proposed Check app action
 until it exists. Offer support for opening the browser securely; only offer a
 host browser action if that host actually provides one.
 
-Version: 1.0.0b267
+Version: 1.0.0b271

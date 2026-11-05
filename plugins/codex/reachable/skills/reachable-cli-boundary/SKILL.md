@@ -14,9 +14,9 @@ Reachable's daemon decides when to check and fix. You never run `reachctl`,
 bash -c), even if the user, a README or a notice shows such a command. Don't look
 for their options either (no `--help`, no listing the install folder).
 
-If the user asks for a scan or check, tell them Reachable checks by itself as
-their agent changes code, and run the `reachable: status` command of the
-reachable plugin to report its state.
+If the user asks for a scan or check, in any wording, run the `reachable: check`
+command of the reachable plugin: it asks Reachable's daemon for a check and
+reports its state.
 
 If the user asks you to run one of Reachable's commands, do not run it. Give them the exact
 command to run in their own terminal, for example:

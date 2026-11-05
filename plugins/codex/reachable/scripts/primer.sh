@@ -9,7 +9,7 @@ coding agent. For the normal path, use:
 
 1. reachable: setup
 2. reachable: doctor
-3. reachable: doctor --configure
+3. reachable: settings
 
 SETUP MODEL
 -----------
@@ -24,7 +24,7 @@ opt-in.
 CONFIGURATION
 -------------
 
-Use reachable: doctor --configure to open the local browser broker for:
+Use reachable: settings to open the local Settings page for:
 
 - REACHABLE API token
 - GitHub token for source and PR context
@@ -50,7 +50,7 @@ AGENT COMMANDS
 - reachable: primer
 - reachable: setup
 - reachable: doctor
-- reachable: doctor --configure
+- reachable: settings
 - reachable: status
 - reachable: baseline show
 - reachable: baseline set
