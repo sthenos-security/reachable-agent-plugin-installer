@@ -25,6 +25,10 @@ whether *this* caller may read that user.
 internal call bypasses, protects nothing. Validate where the dangerous operation happens, or make it
 structurally impossible to reach the operation without passing through validation.
 
+**Validate the value that is used.** A check on the raw string protects nothing if the operation
+uses the decoded, resolved, or redirected value. Canonicalize first, validate that result, act on
+that same result, and do it before the first effect (section 5 shows it for paths).
+
 ## 2. Authentication vs authorization
 
 ```
@@ -69,16 +73,23 @@ Prefer a structured API wherever a string would otherwise be interpreted:
 | filesystem path | path join + canonicalize + containment check |
 | outbound URL | structured URL builder, validated host |
 | deserialization | schema-validated data formats over object reconstruction |
+| XML parsing | a parser with external entities and DTD resolution disabled |
 | interpreter (`eval`, `exec`, dynamic import) | a lookup table or explicit dispatch |
 
 The general question to ask at write time: *is a string I assembled about to be parsed by something
 that can act on its structure?* If yes, find the API that takes the parts separately.
+
+Bound what input controls: request and upload sizes, collection and recursion depth, regex input,
+and loop counts. An attacker-chosen size should never decide an allocation.
 
 ## 4. Secrets
 
 - Use the repo's existing config/secret mechanism. Find it before inventing one.
 - Never hardcode tokens, passwords, private keys, or connection strings with credentials.
 - Never generate a realistic-looking fake credential. Placeholders must be obviously placeholders.
+  The same holds in tests and fixtures, and for personal data (card numbers, SSNs, real-looking
+  emails): use plainly fake values. Adversarial inputs such as traversal strings are fine in tests;
+  they show a fix works.
 - Never disable signature, certificate, or token verification because a secret isn't available
   locally. Make the local path fail loudly instead.
 - Keep secrets out of logs, error messages, and client bundles.

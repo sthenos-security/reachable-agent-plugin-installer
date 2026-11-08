@@ -124,3 +124,9 @@ that performs formatting or lookups.
 
 Run the project's `mvn test` / `gradle test`, plus its existing static analysis (SpotBugs, Error
 Prone, Checkstyle) if configured. Do not add new analysis tooling as part of a coding task.
+
+## Library versions
+
+When you add a Maven or Gradle dependency, read `dependency-hygiene.md` ("Choosing the version"): Maven needs an exact version, so keep them in
+`<properties>` and tell the user to update and check them. Drivers and parsers (JDBC, Jackson, XML,
+archive libraries) are the usual source of advisories; never reuse a version from an old sample.

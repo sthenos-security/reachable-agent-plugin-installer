@@ -26,6 +26,9 @@ Cover every verb. It is common for `GET` to be scoped and `PATCH` or `DELETE` on
 not to be. Nested routes need the parent checked too: `/projects/:pid/tasks/:tid` must verify that
 the caller may access `pid` *and* that `tid` belongs to `pid`.
 
+When you add a handler beside existing ones, give it the controls its siblings have. Read more than
+one; if they differ, follow the stronger and do not weaken the others.
+
 ## Function-level authorization
 
 Administrative and internal endpoints need a role or capability check on the server. Do not rely on
@@ -38,6 +41,9 @@ chain — added routes sometimes fall through to a permissive default.
 Validate with a schema at the edge (zod, pydantic, JSON Schema, bean validation) rather than reading
 fields ad hoc. Reject unknown fields when the shape is fixed. Validate types before values reach a
 query, since a client can often send an object or array where a scalar was assumed.
+
+If you write code that forwards HTTP requests (a proxy or gateway), forward exactly one length,
+never both `Content-Length` and `Transfer-Encoding`, and reject an ambiguous request.
 
 Bound everything that can grow: body size, array lengths, string lengths, page sizes, upload sizes,
 and nesting depth.

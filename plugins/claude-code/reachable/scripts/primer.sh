@@ -17,7 +17,7 @@ SETUP MODEL
 The installed agent package is a thin setup adapter. It does not scan by itself.
 When you run reachable: setup, REACHABLE installs or updates the local runtime,
 wires this workspace, starts the local daemon, configures MCP where supported,
-installs Gate 1 FAST_TRACK skills (reachable-best-practice + reachable-path-probe)
+installs the Gate 1 FAST_TRACK skill (reachable-best-practice)
 into this agent's plugin directory, and leaves baseline scans and remediation
 opt-in.
 

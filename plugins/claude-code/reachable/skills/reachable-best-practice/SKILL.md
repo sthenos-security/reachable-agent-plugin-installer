@@ -30,12 +30,14 @@ You are not a scanner. You do not audit the repository, sweep for patterns, or r
 Before writing, identify files, languages, frameworks, trust boundaries, and whether
 dependencies or lockfiles change.
 
-Then load references. **Always load `references/core-security.md`.** Load others only when they
-apply. Two or three topical refs is normal. Loading all is a mistake.
+The core rules are in Step 3 of this file, so they arrive with this skill. The references hold
+the language and surface detail. **Before your first Write or Edit in a language, Read that
+language's reference below. Before adding or changing a dependency in a manifest, Read
+`dependency-hygiene.md`.** Two or three references is normal. Loading all is a mistake.
 
-| Load this | When you are writing |
+| Read this | When you are writing |
 |---|---|
-| `core-security.md` | always |
+| `core-security.md` | the longer explanation behind Step 3, when a rule needs it |
 | `python-security.md` | Python |
 | `javascript-typescript-security.md` | JS, TS, Node |
 | `go-security.md` | Go |
@@ -48,12 +50,12 @@ apply. Two or three topical refs is normal. Loading all is a mistake.
 
 There is no Rust reference in V1 that implies remediate support.
 
-For high-signal issues already in scope (CVEs, labeled candidates), also use the sibling skill
-`reachable-path-probe` — path finding is advisory only.
-
 ## Step 2 — Read before you change
 
 - Follow the project's conventions; reuse existing security helpers.
+- When you add an operation beside existing ones (another handler, query, or command), read more
+  than one sibling where they exist and give the new one the controls they have. If the siblings
+  disagree, follow the stronger control and do not weaken the others.
 - Identify what the current code already protects and keep it intact.
 - **Never weaken a security control** to make code, a test, a type check, or a build pass.
   If you cannot proceed without removing a control, stop and say so.
@@ -66,8 +68,41 @@ For high-signal issues already in scope (CVEs, labeled candidates), also use the
   template auto-escape, path join + containment).
 - Put authorization next to the operation it protects (object/tenant scope on the server).
 - Keep secrets out of source; use the repo's existing secret mechanism.
+- Validate the value the operation will actually use: after decoding and canonicalization
+  (percent-decoding, Unicode normalization, path resolution, redirects, aliases), and before the
+  first effect.
 - Fail closed when a security check errors or a value is missing.
 - Prefer boring established primitives; keep the change minimal.
+
+### Core rules (in this file so they cannot be skipped)
+
+- **Authorization on the object.** A handler that takes an id from the client reads or writes
+  only through a query scoped by the authenticated caller's tenant or owner
+  (`WHERE id = ? AND org_id = ?`). A well-formed id is not authorization; never trust a role or
+  org the client sends; the UI hiding an action protects nothing.
+- **Paths: resolve, contain, then use.** Resolve the final path, check it is inside the intended
+  root (resolved parent or `is_relative_to`), and only then open it. Name stored files with a
+  server-generated key, never the user's filename; create them exclusively with mode 0600.
+- **Interpreters take parts, not strings.** SQL binds, process argv arrays, auto-escaped
+  templates, schema-validated data instead of object deserialization, XML parsers with external
+  entities off, no `eval`. Bound what input controls: body and upload size, regex input,
+  recursion and loop counts.
+- **Tokens and secrets.** Read keys from the environment or the repo's secret mechanism and
+  refuse to start when one is missing or short (32 random characters or more for a signing key).
+  Verify signature, expiry, issuer and audience; fix the algorithm in code, never take it from the
+  token header; use a different key or audience for each kind of token; compare secrets in
+  constant time. Never hardcode a secret or invent a realistic-looking one.
+- **Outbound URLs.** Check scheme and host against what the feature needs, set a timeout, decide
+  on redirects. Do not invent an allowlist where the product fetches arbitrary URLs.
+- **Crypto.** The platform's vetted library; a password KDF (argon2, scrypt, bcrypt) for
+  passwords; the secure random generator for tokens and ids.
+- **Dependencies you add or change.** Prefer what the manifest or standard library already has.
+  Never guess a package name. Your memory of the latest version is months old: for Python and npm
+  give a lower bound and a major-version cap, not an exact pin, and let the package manager resolve;
+  for Maven, Gradle and Go say the versions come from memory and need updating. List what you chose
+  in your final message. Read `dependency-hygiene.md` first.
+- **Keep what exists.** Never remove or weaken authentication, authorization, tenant isolation,
+  validation, rate limits or audit logging as a side effect.
 
 ## Step 4 — Preflight your own diff before handoff
 
@@ -85,6 +120,8 @@ High-confidence checklist — fix now only when the safe replacement is local an
 - unsafe deserialization or dynamic evaluation of input
 - sensitive data flowing to logs, model context, or outbound calls
 - new dependency without a lockfile update or with suspicious install behavior
+- dependency version copied from an old example instead of the newest stable release you know
+  of, or chosen versions not listed in your final message
 
 Rules:
 
@@ -97,6 +134,12 @@ Rules:
 - Run the narrowest existing check for the changed behavior (test/lint/typecheck). Do not
   invent test commands when the project exposes none.
 - If a preflight edit breaks the scoped behavior, revert just that edit and mark it deferred.
+- **Finishing a fix:** re-read the callers of any helper you changed and both outcomes of each
+  changed condition, and keep ordinary input working. Reading is the check: if an existing caller
+  is affected, keep the helper's contract or say so; do not edit the caller (Step 5).
+- **Tests and fixtures:** use plainly fake values for secrets and personal data (never a
+  real-looking credential, card number, or SSN). Adversarial inputs such as traversal strings are
+  fine in tests; they show a fix works.
 - **Do not run the scanner yourself.** Your pass finishes inside the current task —
   `reachctl scan` / remediate runs when the user or pipeline invokes it, on its own
   schedule. Shaving defects off its workload is your whole contribution; triggering it

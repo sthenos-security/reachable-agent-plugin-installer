@@ -9,8 +9,8 @@ proof belong to remediate admission (S0/S1/V0).
 
 ## Precedence
 
-A REACHABLE remediate directive **supersedes** `reachable-best-practice` and
-`reachable-path-probe` for the finding and scope it names.
+A REACHABLE remediate directive **supersedes** `reachable-best-practice` for the
+finding and scope it names.
 
 Outside that named scope, the rest of best-practice still applies.
 
@@ -19,7 +19,7 @@ Full stack (highest wins for its scope):
 1. Explicit user request
 2. Remedi ate directive (this file) for named finding/scope
 3. Synthesizer `reachable-security` under `.reachable/ai-rules/`
-4. `reachable-best-practice` / `reachable-path-probe`
+4. `reachable-best-practice`
 
 ## What the directive looks like
 

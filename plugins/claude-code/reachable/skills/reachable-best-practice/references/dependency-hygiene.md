@@ -34,6 +34,27 @@ the name confirmed.
 Watch for names that differ from a well-known package by a character, a hyphen, or a scope — those
 are typosquats, and they look correct at a glance.
 
+## Choosing the version
+
+Your knowledge of the latest release is months out of date, so an exact version you remember is
+probably already vulnerable. Do not present any version you choose as safe.
+
+- **Python and npm (ranges are native).** In a new project do not pin an exact version from memory.
+  Give a lower bound you know exists and the next major as the upper bound (`Flask>=3.0,<4`,
+  `"express": "^4.19.0"`), so the package manager resolves a current release. The lockfile the package
+  manager writes at install holds the exact versions; do not write one by hand.
+- **Maven, Gradle, Go (an exact version is required).** Use a version you know exists, keep every
+  version in one place (a `<properties>` block, `go.mod`), prefer fewer dependencies (the standard
+  library first), and say in your final message that the versions come from memory and must be updated
+  and checked before shipping (`mvn versions:display-dependency-updates`, `go list -u -m all`).
+- If the project already pins exact versions, follow it (see "Version pinning"). Do not pick a
+  pre-release, or a version you are unsure exists; if you do not know a recent version, say so.
+- Libraries that most often have advisories (JSON, XML, database drivers, web frameworks, HTTP
+  clients, archive and image libraries): fewest of them, and say which versions you chose.
+- In your final message, list every dependency you added or changed with the version or range you
+  chose, and which of the two cases above applied. You cannot check whether a version is vulnerable
+  (REACHABLE does that); the list lets it be checked.
+
 ## Version pinning
 
 - Add the dependency the way the project already does it. If the project pins exact versions, pin.

@@ -74,7 +74,14 @@ fi
 # which to keep, before anything is installed or wired (audit 2026-11-04: not
 # built). Only an installed runtime can have set one up.
 reachable_runtime="${REACHABLE_HOME:-$HOME/.reachable}/venv/bin/reachctl"
-if [ -x "$reachable_runtime" ]; then
+# MCP-NATIVE-BOOTSTRAP.md section 7.3: an installed runtime OLDER than this
+# plugin is adopted and reported, never a failure. Runtimes before 1.0.0b271
+# have no `vibe apps-inside`; asking them stopped every upgrade (b271
+# post-release run 42127585908). Such a runtime is upgraded below, and the
+# question is asked on the next setup, by the runtime that can answer it.
+if [ -x "$reachable_runtime" ] && ! "$reachable_runtime" vibe apps-inside --help >/dev/null 2>&1; then
+  echo "Reachable on this machine is older than this plugin: it can't list the apps it already checks inside $workspace. Setup upgrades it now. If an app inside this folder was set up on its own, run setup again afterwards to choose which to keep."
+elif [ -x "$reachable_runtime" ]; then
   if ! apps_inside="$("$reachable_runtime" vibe apps-inside --workspace "$workspace")"; then
     echo "Setup didn't finish: it couldn't read which apps Reachable already checks inside $workspace. Run \`/reachable:setup\` to try again, or say \`reachable: report a problem\`." >&2
     exit 1
@@ -108,7 +115,7 @@ fi
 # --version, so it resolves "latest" from the signed release manifest and
 # installs the newest wheel. The installer stays at this plugin's version; the
 # product does not. Updating the plugin is only needed to get a newer INSTALLER.
-installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b271/install.sh}"
+installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b272/install.sh}"
 release_manifest_url="${REACHABLE_RELEASE_MANIFEST_URL:-https://sthenosec.com/download/manifest.json}"
 installer_sha384="60dd287f4baaaa6700ee44907ac34fbaec8b5682c8e3c6b010089545cfcd752e251a86e516222e92fc9f0105c59ee75d"
 verify_plugin_installer="${REACHABLE_VERIFY_PLUGIN_INSTALLER:-1}"

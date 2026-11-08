@@ -22,6 +22,16 @@
           }
         ],
         "matcher": "Write|Edit|MultiEdit|Bash"
+      },
+      {
+        "hooks": [
+          {
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/record-skill-use.sh\"",
+            "timeout": 5,
+            "type": "command"
+          }
+        ],
+        "matcher": "Skill|Read|Write|Edit|MultiEdit"
       }
     ],
     "SessionStart": [
@@ -41,6 +51,15 @@
         "hooks": [
           {
             "command": "\"${CLAUDE_PLUGIN_ROOT}/bin/reachable-hook\" stop",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/turn-end-notice.sh\"",
             "timeout": 5,
             "type": "command"
           }
