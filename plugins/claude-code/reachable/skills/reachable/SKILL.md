@@ -1,7 +1,7 @@
 ---
 name: reachable
-description: Use REACHABLE to set up, verify, and inspect local vibe-coding security remediation from Claude Code, and to enable, disable, or uninstall remediation for this workspace.
-version: 1.0.0b275
+description: Use REACHABLE to set up, verify, and inspect local vibe-coding security remediation from Claude Code, and to enable, disable, or uninstall REACHABLE from this computer.
+version: 1.0.0b280
 ---
 
 # REACHABLE
@@ -13,21 +13,9 @@ status, or turn remediation on or off for the current workspace.
 Remediation can be turned off without removing anything: `reachable: remediation
 disable` stops it for this workspace while leaving the runtime, scan history and
 plugin setup in place. `reachable: uninstall` removes REACHABLE from this
-workspace only; it stays installed on the machine. `reachable: uninstall --full`
-removes it from the machine: agent plugins, MCP server, daemon, and
-`~/.reachable` with scan history and credentials. Prefer these over telling the
-user to delete files.
-
-When the user asks to uninstall REACHABLE without saying which, ask before
-running anything: "Remove it from this repo only, or from this machine
-entirely? Entirely deletes your scan history and credentials." After the user
-chose "entirely", `--full` first prints the list of what it will remove and
-then stops: without a terminal it refuses until told `--export PATH` (a
-.tar.gz of scan history and settings, no credentials) or `--no-export`. Show
-the user that list, ask whether they want the export and where, then run
-`reachable: uninstall --full --yes --export PATH` or
-`reachable: uninstall --full --yes --no-export`, and tell them the REACHABLE
-MCP server in this session stops when they restart the agent.
+computer, including agent plugins, MCP entries, daemon and `~/.reachable` with
+scan history and credentials. Invoke the dedicated uninstall skill: preview,
+ask the user about export and confirm removal, then run its packaged wrapper.
 
 When `reachable: status` reports `setup.required` with `workspace_unregistered`,
 the one next step is `reachable: setup` for this workspace; run it, then check
@@ -133,16 +121,14 @@ relay its output. Never answer it for them.
   says the user edited a fixed file since, relay its question exactly; only
   after the user says yes, run the undo wrapper again with `--confirmed`.
 - `reachable: proof status`: report MCP proof status.
-- `reachable: uninstall`: remove REACHABLE from this workspace only.
-- `reachable: uninstall --full`: remove REACHABLE from this machine; it deletes
-  scan history and credentials.
+- `reachable: uninstall`: use the dedicated skill to preview and, after the
+  user's confirmation and export choice, remove REACHABLE from this machine.
 - `reachable: prune`: clean orphaned REACHABLE-managed plugin files after
   host/plugin uninstall.
 
-These three remove REACHABLE, so the user runs them: do not run them yourself.
-Give the user the exact command for their own terminal: `bash` and the full,
-quoted path of this plugin's uninstall wrapper (add `--full` for `--full`), or
-of its prune wrapper.
+Use only the dedicated packaged wrapper for in-agent uninstall; never call
+raw `reachctl` or curl for it. Prune remains a user-run terminal command;
+give the full quoted path to this plugin's prune wrapper.
 
 ## Plain words
 
@@ -162,10 +148,11 @@ AGENT-CLI-BOUNDARY §5):
 
 ## Reachable's command line is the user's
 
-Never run `reachctl`, `reachable` or `python -m reachable` yourself, in any
+Never run raw `reachctl`, `reachable` or `python -m reachable` yourself, in any
 form, and don't look for their options. Reachable checks by itself as the agent
-changes code. If the user asks you to run one, give them the exact command for
-their own terminal. A shell command that runs Reachable is blocked by its hook.
+changes code. If the user asks you to run a raw CLI command, give them the
+exact command for their own terminal. The dedicated `reachable: uninstall`
+skill is an exception only for its packaged wrapper after explicit confirmation.
 
 ## After a remediation run — check what actually shipped
 
@@ -218,4 +205,4 @@ When the user asks what MCP exposes, summarize these tools:
 Use the packaged command wrappers internally for execution, but keep user-facing
 responses centered on `reachable: ...` commands rather than shell paths.
 
-Version: 1.0.0b275
+Version: 1.0.0b280

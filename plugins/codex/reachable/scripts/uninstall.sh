@@ -1,7 +1,15 @@
 #!/usr/bin/env sh
 set -eu
 workspace="${REACHABLE_WORKSPACE:-$(pwd)}"
-reachable_user_home=""
+if [ -n "${REACHABLE_HOME:-}" ]; then
+  if [ -z "${HOME:-}" ]; then
+    echo "REACHABLE_HOME is set but HOME is empty; cannot determine agent config home for reachable setup." >&2
+    exit 1
+  fi
+  reachable_home="${REACHABLE_HOME}"
+fi
+if [ -z "${REACHABLE_HOME:-}" ]; then
+  reachable_user_home=""
 reachable_uid="$(/usr/bin/id -u 2>/dev/null || id -u 2>/dev/null || true)"
 reachable_user="$(/usr/bin/id -un 2>/dev/null || id -un 2>/dev/null || true)"
 if [ -n "$reachable_uid" ] && [ -x /usr/bin/getent ]; then
@@ -25,10 +33,7 @@ case "$reachable_user_home" in
 esac
 HOME="$reachable_user_home"
 export HOME
-if [ -n "${REACHABLE_HOME:-}" ]; then
-  reachable_home="${REACHABLE_HOME}"
-else
-  reachable_home="$HOME/.reachable"
+reachable_home="$HOME/.reachable"
 fi
 if [ -z "${PYTHON:-}" ] && [ -x "$reachable_home/venv/bin/python" ]; then
   PYTHON="$reachable_home/venv/bin/python"
@@ -46,7 +51,7 @@ elif [ -x "$reachable_home/venv/bin/reachctl" ]; then
   fi
 fi
 if [ -z "$reachctl_bin" ]; then
-  echo "REACHABLE CLI not found. Run setup first." >&2
+  echo "REACHABLE runtime is missing or unhealthy. Run the packaged reachable: setup skill to repair it, then retry uninstall; no files were removed." >&2
   exit 1
 fi
-exec "$reachctl_bin" vibe uninstall --agent codex --workspace "$workspace" "$@"
+exec "$reachctl_bin" vibe uninstall --full --workspace "$workspace" "$@"

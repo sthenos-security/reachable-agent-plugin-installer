@@ -8,7 +8,7 @@ fi
 if [ "${1:-}" = "more" ]; then
 cat <<'EOF'
 reachable: doctor             check that Reachable itself is working
-reachable: uninstall          remove Reachable from this app (add --full for this computer)
+reachable: uninstall          remove Reachable from this computer
 reachable: prune              clean up Reachable files left behind by an agent uninstall
 EOF
   exit 0

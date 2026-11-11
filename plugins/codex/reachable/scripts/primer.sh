@@ -61,12 +61,16 @@ AGENT COMMANDS
 - reachable: proof status
 - reachable: open dashboard
 - reachable: uninstall
-- reachable: uninstall --full
 - reachable: prune
 
 reachable: remediation enable opens the settings page; you turn fixing on there.
 No scan is started; remediation applies on the next eligible agent event or
 explicit remediation run.
+
+reachable: uninstall runs inside this agent. It previews full removal, asks
+whether to export history and settings and asks for your confirmation, then
+removes REACHABLE's plugins, skills, daemon, active jobs and local data. Restart
+the agent afterwards to release the MCP process in this session.
 
 MCP TOOLS
 ---------

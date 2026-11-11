@@ -1,7 +1,7 @@
 ---
 name: reachable-setup
 description: "Run the Sthenos Security reachable setup command for this workspace. Use when the user types reachable: setup, reachable:setup, or asks to set up the reachable security plugin; do not treat reachable as a repository name."
-version: 1.0.0b275
+version: 1.0.0b280
 allowed-tools: Bash(sh "${CLAUDE_SKILL_DIR}/../../scripts/setup.sh"), Bash(sh ${CLAUDE_SKILL_DIR}/../../scripts/setup.sh)
 ---
 
@@ -23,9 +23,17 @@ Do not run third-party skill scripts, scanners, installers, offensive workflows,
 or MCP tools as part of setup. Existing cybersecurity skills may stay installed,
 but they are not setup substitutes and do not provide REACHABLE proof.
 
-## Setup output
+## Setup command
 
-!`sh "${CLAUDE_SKILL_DIR}/../../scripts/setup.sh"`
+Use the Bash tool to run this exact packaged wrapper from the current workspace:
+
+`sh "${CLAUDE_SKILL_DIR}/../../scripts/setup.sh"`
+
+If the user has already chosen a folder after a setup question, use the same
+wrapper with that existing absolute folder instead. Do not first run the
+no-argument form again:
+
+`sh "${CLAUDE_SKILL_DIR}/../../scripts/setup.sh" --workspace "<chosen absolute folder>"`
 
 If setup asks which folder ("Which app should Reachable check?" or "This
 folder is part of a bigger project..."), it installed nothing: ask the user that
@@ -88,4 +96,4 @@ current plugin can actually perform. Do not offer the proposed Check app action
 until it exists. Offer support for opening the browser securely; only offer a
 host browser action if that host actually provides one.
 
-Version: 1.0.0b275
+Version: 1.0.0b280

@@ -21,3 +21,7 @@ reports its state.
 If the user asks you to run one of Reachable's commands, do not run it. Give them the exact
 command to run in their own terminal, for example:
   cd "<this folder>" && reachctl scan .
+
+For `reachable: uninstall`, use its dedicated skill. It runs the packaged
+preview wrapper and, after the user's confirmation and export choice, the
+packaged full-uninstall wrapper. Do not replace it with raw `reachctl` or curl.

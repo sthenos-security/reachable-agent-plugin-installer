@@ -54,6 +54,8 @@ When generating or modifying source code:
 10. Never run reachctl, reachable or python -m reachable yourself, and don't look
     for their options; use the reachable: commands. If the user wants to run one,
     give them the exact command for their own terminal (`reachable-cli-boundary`).
+    The `reachable: uninstall` skill uses only its packaged wrapper after the
+    user's export choice and explicit confirmation.
 
 If the user explicitly requests something this guidance discourages, do as
 asked, note the concern in one sentence, and continue. The one exception is
