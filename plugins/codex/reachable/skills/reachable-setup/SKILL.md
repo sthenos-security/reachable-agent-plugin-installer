@@ -1,7 +1,7 @@
 ---
 name: reachable-setup
 description: "Run the Sthenos Security reachable setup command for this workspace. Use when the user types reachable: setup, reachable:setup, or asks to set up the reachable security plugin; do not treat reachable as a repository name."
-version: 1.0.0b280
+version: 1.0.0b281
 
 ---
 
@@ -13,7 +13,7 @@ it into words, do not search for a repository named `reachable`, do not set up
 the current application, and do not resolve `reachable` to any local project,
 package, directory, or tool outside this plugin.
 
-Before you run it, tell the user, as written (onboarding §3.1, C18): "Your agent will ask permission to run Reachable's setup. It's safe to choose Yes. If you chose No, just run `/reachable:setup` again."
+Before you run it, tell the user, as written (onboarding §3.1, C18): "Please wait while Reachable is being installed."
 
 Run the packaged setup wrapper exactly once. Do not explore the repository
 first, do not inspect plugin files, do not list skill directories, and do not
@@ -100,4 +100,4 @@ current plugin can actually perform. Do not offer the proposed Check app action
 until it exists. Offer support for opening the browser securely; only offer a
 host browser action if that host actually provides one.
 
-Version: 1.0.0b280
+Version: 1.0.0b281

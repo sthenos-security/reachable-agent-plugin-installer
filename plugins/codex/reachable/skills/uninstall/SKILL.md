@@ -22,5 +22,6 @@ do not run raw `reachctl`, curl or manual file deletion.
    or `$PLUGIN_ROOT/scripts/uninstall.sh --yes --export <user-chosen-path>`. Pass an export path as one
    quoted argument. The host may also ask for permission to run the command.
 4. Relay the result. If a step fails, say which step failed and do not claim
-   removal finished. A running agent session may retain its MCP child until
-   that agent restarts; tell the user to restart it.
+   removal finished. The uninstall stops REACHABLE's MCP servers, including
+   this session's; tell the user to restart the agent so it stops listing the
+   REACHABLE tools.

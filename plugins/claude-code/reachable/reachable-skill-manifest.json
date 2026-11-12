@@ -1,8 +1,8 @@
 {
   "algorithm": "sha256",
-  "content_hash": "c83190eeca81d0415a25b5281617fd1fdde5006627737cb12de786e1e8889b8e",
+  "content_hash": "2b06ed858698f41f5cbfe0f542a9c72b3e76b838b261f35ff1e3ee956b0eab96",
   "files": {
-    ".claude-plugin/plugin.json": "e1e2b6baaf7b69c91064cc98ce3c74a1beec82e52b1bb8078bee56117f5266bf",
+    ".claude-plugin/plugin.json": "5f557bc9f6e4cd5b24289e273e1f5746ef590ef9988a22e837bea4f84af64a03",
     ".mcp.json": "5349029e4c08685c389a6181c4ef3bf9bf978afd747106e6eefbaca2969ccc99",
     "LICENSE": "0dc1355bf9137407ef847bc32e317bb20d6e271a3045a66b8e76b1a91848f811",
     "NOTICE": "e6138feb85c380bd5b44a14db0f9d39b4d282e2c22b884c6095a99f5696d130d",
@@ -35,7 +35,7 @@
     "scripts/report-problem.sh": "c6b56955844b8adebbdda448e8e702fb26225b108569c31c770ebd9571cbbf1e",
     "scripts/root-fingerprint.txt": "69e712e1e6e7eddaa0f3334dd291f39bfaaa5c1409dab58a20fafd02192fa2e6",
     "scripts/settings.sh": "e9d80b939d006c5f0b1b25f2a77e3d8bda09c3a9807f8f965f349c63e67e9132",
-    "scripts/setup.sh": "d95a5a8602003acafcac9d951bee4b7ff0be527c0b3393be7bada9d3b2037e14",
+    "scripts/setup.sh": "b4913cc5669e8ea562edc17d34e7ea74b2d80618233e24bb4c91f3c868a76374",
     "scripts/status.sh": "40d4ce05595a23994c5b6c78aaab6e7cb8a3f5bd676300c614da5a7f83e5beba",
     "scripts/undo.sh": "0cc8bf1ddbcadf645d01389764bd3d1bbd93128e81f0a1416be7fb0c987d2691",
     "scripts/uninstall.sh": "e0963d0064fd71539b525e0086544054efc1f7df8f1564aefd7a37c869b719de",
@@ -58,13 +58,13 @@
     "skills/reachable-best-practice/references/remediation-precedence.md": "0312722c2e0eaccf0a7d099902f9f475cc00b590e6e8ad7ae07c112cf1ef2b70",
     "skills/reachable-best-practice/references/web-security.md": "9818769e6b82a76fb4325aee72ff5fbd654591ab663e70c38bab0caf425fcd5a",
     "skills/reachable-cli-boundary/SKILL.md": "c0777b71ff32b9b488f7ad6bfe128fc2ac9fc246f3ce5b89bd4fd14d141a9806",
-    "skills/reachable-setup/SKILL.md": "652e80a86a9a04f048b9ac77ac0a689f3bcef3039b204336d45f4186ccf15e99",
-    "skills/reachable/SKILL.md": "33d410011cb89d2112326eb771ef87cf1f0a9d80c0c1d6536157ecf0c5d0196a",
+    "skills/reachable-setup/SKILL.md": "adbef9f757a8c9a5950ef7812e9a2bc7549e5691094a04112069b45d4d4ad9e1",
+    "skills/reachable/SKILL.md": "a8fdc8cf944028d17e10285dd790ed4683f5c2a1bf452a14c8f1c1a134208e4f",
     "skills/report-a-problem/SKILL.md": "8704e4d495aa51a4da834b6654a1f18dea0dcf3465a9499111d64c268749d5e0",
     "skills/settings/SKILL.md": "7148b75505214ced066b61778faf5f22dcfd5dcb148796822e36e66da4875b0a",
     "skills/status/SKILL.md": "b33f4955e7dd9c91109e0fbdc3d6b51e254c0a113c06214bd2c253d56df368bc",
     "skills/undo/SKILL.md": "14a4d5546681fe1c379d0f16e4b19e9d4d9d0e49eeadd3799c9a7c542868deef",
-    "skills/uninstall/SKILL.md": "0c23bd6813fe28d088bf8cd330d10ecd4028cd095e4fa5115c683002ceffbc59"
+    "skills/uninstall/SKILL.md": "68d27ba7e8d5ff0ead04c4ae969a19dd2aa3fd4405faa7156b970bee3e091f4f"
   },
   "schema_version": 1
 }
