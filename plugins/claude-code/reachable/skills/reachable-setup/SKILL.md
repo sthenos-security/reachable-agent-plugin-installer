@@ -1,7 +1,7 @@
 ---
 name: reachable-setup
 description: "Run the Sthenos Security reachable setup command for this workspace. Use when the user types reachable: setup, reachable:setup, or asks to set up the reachable security plugin; do not treat reachable as a repository name."
-version: 1.0.0b282
+version: 1.0.0b283
 allowed-tools: Bash(sh "${CLAUDE_SKILL_DIR}/../../scripts/setup.sh"), Bash(sh ${CLAUDE_SKILL_DIR}/../../scripts/setup.sh)
 ---
 
@@ -13,7 +13,9 @@ it into words, do not search for a repository named `reachable`, do not set up
 the current application, and do not resolve `reachable` to any local project,
 package, directory, or tool outside this plugin.
 
-Before you run it, tell the user, as written (onboarding §3.1, C18): "Please wait while Reachable is being installed."
+Setup asks first and installs nothing until the user answers y (below). Before
+you run it with `--consent yes`, tell the user, as written (onboarding §3.1, C18):
+"Please wait while Reachable is being installed."
 
 Run the packaged setup wrapper exactly once. Do not explore the repository
 first, do not inspect plugin files, do not list skill directories, and do not
@@ -41,10 +43,13 @@ question as written, with the choices it listed, then run the same packaged
 setup wrapper once more with `--workspace "<the folder they chose>"`. Never
 pick the folder yourself.
 
-If setup's summary asks whether Reachable may fix security issues (the
-settings page couldn't be opened), ask the user that question. When they
-answer, run the packaged `record-answer.sh fix` or `record-answer.sh report`
-from the same scripts folder, and relay what it prints.
+If setup asks "Proceed? [y/N]" (it says Reachable will automatically make
+security changes to the code), it installed and changed nothing: ask the user
+that question exactly as written and wait. Only if they answer y, run the same
+packaged setup wrapper again with the same arguments plus `--consent yes`. Any
+other answer, or no answer: say "OK, nothing changed. Run /reachable:setup
+again when you're ready." and stop. Never answer it yourself and never add
+`--consent yes` unless the user typed y.
 
 If setup says Reachable already checks apps on their own inside the folder,
 it changed nothing: ask the user whether to check the whole project instead or
@@ -96,4 +101,4 @@ current plugin can actually perform. Do not offer the proposed Check app action
 until it exists. Offer support for opening the browser securely; only offer a
 host browser action if that host actually provides one.
 
-Version: 1.0.0b282
+Version: 1.0.0b283

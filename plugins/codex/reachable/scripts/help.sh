@@ -75,15 +75,9 @@ echo ""
 echo "$app_line"
 echo ""
 cat <<'EOF'
-reachable: status             what it found and fixed, and what it's doing now
-reachable: fix                fix the problems it found
-reachable: undo               undo the last Reachable fix
-reachable: check              check now, or as soon as it can
-reachable: action             allow-fixes, report, stop or start
-reachable: open               see results and fixes in your browser
-reachable: settings           add AI or GitHub access, change what it does
-reachable: cost               what checks and fixes have cost
-reachable: report a problem   something not working, or a question
+reachable: setup              set Reachable up for this app (once)
+reachable: status             what Reachable is doing, what it found and fixed
+reachable: settings           keys, and turning Reachable on or off
 
 More: reachable: help more
 EOF

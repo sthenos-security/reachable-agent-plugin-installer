@@ -8,25 +8,45 @@ workspace="${REACHABLE_WORKSPACE:-$(pwd)}"
 # onboarding §5 rule 2).
 # `--replace-apps-inside` (onboarding §5 rule 4): the user chose to check the
 # whole folder, so apps set up on their own inside it become part of it.
+# `--consent yes` (unified design Part A §6.1): the user answered "y" to the
+# warning this script prints when it is absent. Nothing is installed or changed
+# without it.
 replace_apps_inside=""
-if [ "$#" -gt 0 ]; then
-  if [ "$#" -eq 2 ] && [ "$1" = "--workspace" ] && [ -d "$2" ]; then
-    workspace="$(CDPATH= cd -- "$2" && pwd)"
-  elif [ "$#" -eq 3 ] && [ "$1" = "--workspace" ] && [ -d "$2" ] && [ "$3" = "--replace-apps-inside" ]; then
-    workspace="$(CDPATH= cd -- "$2" && pwd)"
-    replace_apps_inside=1
-    set -- "$1" "$2"
-  else
-    echo "usage: setup.sh [--workspace <existing folder> [--replace-apps-inside]]" >&2
-    exit 2
-  fi
-fi
+named_workspace=""
+consent=""
+reachable_setup_usage() {
+  echo "usage: setup.sh [--workspace <existing folder> [--replace-apps-inside]] [--consent yes]" >&2
+  exit 2
+}
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --workspace)
+      if [ "$#" -lt 2 ] || [ -n "$named_workspace" ] || [ ! -d "$2" ]; then reachable_setup_usage; fi
+      workspace="$(CDPATH= cd -- "$2" && pwd)"
+      named_workspace=1
+      shift 2
+      ;;
+    --replace-apps-inside)
+      if [ -z "$named_workspace" ] || [ -n "$replace_apps_inside" ]; then reachable_setup_usage; fi
+      replace_apps_inside=1
+      shift
+      ;;
+    --consent)
+      if [ "$#" -lt 2 ] || [ "$2" != "yes" ] || [ -n "$consent" ]; then reachable_setup_usage; fi
+      consent=yes
+      shift 2
+      ;;
+    *)
+      reachable_setup_usage
+      ;;
+  esac
+done
 # Which folder (onboarding §3.1, C25). Without a folder named, setup uses the
 # folder the agent is open in -- except the home folder, a folder holding
 # several apps, or a folder inside a bigger project: then it asks, installs
 # nothing, and exits 3; the agent asks the user and runs setup again
 # with `--workspace <the chosen folder>`. No guessed app.
-if [ "$#" -eq 0 ] && [ -z "${REACHABLE_WORKSPACE:-}" ]; then
+if [ -z "$named_workspace" ] && [ -z "${REACHABLE_WORKSPACE:-}" ]; then
   reachable_is_app() {
     if [ -e "$1/.git" ]; then return 0; fi
     for reachable_manifest in package.json pyproject.toml setup.py requirements.txt go.mod Cargo.toml pom.xml build.gradle build.gradle.kts Gemfile composer.json; do
@@ -69,6 +89,25 @@ if [ "$#" -eq 0 ] && [ -z "${REACHABLE_WORKSPACE:-}" ]; then
     echo "(For the agent: ask the user, then run this setup again with --workspace and the chosen folder.)"
     exit 3
   fi
+fi
+# Unified design Part A §6.1 (Al, 2026-11-13): automatic remediation is on by
+# default, so before anything is installed or changed the user is told, with the
+# folder and branch, and asked. Branching is the user's business: Reachable reads
+# the branch and writes nothing to git. Without `--consent yes` this exits
+# having changed nothing; the agent asks and reruns only on "y".
+if [ "$consent" != "yes" ]; then
+  if command -v git >/dev/null 2>&1 && git -C "$workspace" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    reachable_branch="$(git -C "$workspace" symbolic-ref --short -q HEAD 2>/dev/null || true)"
+    if [ -z "$reachable_branch" ]; then
+      reachable_branch="detached at $(git -C "$workspace" rev-parse --short HEAD 2>/dev/null || echo 'an unknown commit')"
+    fi
+    reachable_where="$workspace (branch $reachable_branch)"
+  else
+    reachable_where="$workspace. This folder has no version history"
+  fi
+  echo "Reachable will scan this app and automatically make security changes to your code in $reachable_where. If you want the changes on a separate branch, exit now and create one first. Proceed? [y/N]"
+  echo "(For the agent: ask the user exactly this and wait. Only if they answer y, run this setup again with the same arguments plus --consent yes. Any other answer: say \"OK, nothing changed. Run /reachable:setup again when you're ready.\" and stop. Nothing was installed or changed.)"
+  exit 4
 fi
 # Onboarding §5 rule 4: an app set up on its own inside this folder -- asking
 # which to keep, before anything is installed or wired (audit 2026-11-04: not
@@ -115,7 +154,7 @@ fi
 # --version, so it resolves "latest" from the signed release manifest and
 # installs the newest wheel. The installer stays at this plugin's version; the
 # product does not. Updating the plugin is only needed to get a newer INSTALLER.
-installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b282/install.sh}"
+installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b283/install.sh}"
 release_manifest_url="${REACHABLE_RELEASE_MANIFEST_URL:-https://sthenosec.com/download/manifest.json}"
 installer_sha384="2405129751780bdd979b7af989ff64b9a106504ada8e1c25320ae3f980df07ab947d800b7e7a5fae06b719799875835b"
 verify_plugin_installer="${REACHABLE_VERIFY_PLUGIN_INSTALLER:-1}"
@@ -327,7 +366,7 @@ elif [ -z "${REACHABLE_REACHCTL_BIN:-}" ] && [ -x "$reachable_home/venv/bin/reac
   fi
 fi
 if [ -n "$bootstrap_bin" ]; then
-  exec "$bootstrap_bin" setup --agent codex --workspace "$workspace" --installer-url "$installer_url" --release "$release_selector" $bootstrap_install_args "$@"
+  exec "$bootstrap_bin" setup --agent codex --workspace "$workspace" --installer-url "$installer_url" --release "$release_selector" $bootstrap_install_args --consent automatic
 fi
 # The normal path uses reachable-plugin-bootstrap, which install.sh provides.
 # No fallback: a missing bootstrap is a failed install, not an opportunity to

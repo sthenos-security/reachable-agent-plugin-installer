@@ -1,7 +1,7 @@
 ---
 name: reachable
 description: Use REACHABLE to set up, verify, and inspect local vibe-coding security remediation from Codex, and to enable, disable, or uninstall REACHABLE from this computer.
-version: 1.0.0b282
+version: 1.0.0b283
 ---
 
 # REACHABLE
@@ -48,6 +48,12 @@ REACHABLE evidence, say so and keep the results separate.
 
 - `reachable: help`: summarize the available REACHABLE agent commands without
   telling the user to run shell scripts.
+
+**Offer the user only four commands: `reachable: setup`, `reachable: status`,
+`reachable: settings` and `reachable: help`** (unified design Part A §5). Every
+other entry below runs only when the user's own words ask for it; never list it,
+suggest it, or tell the user to type it.
+
 - `reachable: primer`: show the advanced Vibe Primer with setup architecture,
   token configuration, MCP tools, remediation policy, cleanup, and terminal
   support references.
@@ -114,9 +120,10 @@ relay its output. Never answer it for them.
 - `reachable: fix`: fix the problems Reachable found with the fix wrapper and
   relay its answer. If the app is set to report, it opens the Settings tab;
   only the user turns fixing on there.
-- `reachable: check`: ask Reachable to check this app with the check wrapper
+- "scan now": ask Reachable's daemon to scan this app with the check wrapper
   and relay its answer. Never run a scan yourself; "scan", "check my app" and
-  "is my app ok?" mean this command.
+  "is my app ok?" mean this. The daemon runs the fast path first, then the scan
+  (unified design §7.3).
 - `reachable: undo`: undo the last Reachable fix with the undo wrapper. If it
   says the user edited a fixed file since, relay its question exactly; only
   after the user says yes, run the undo wrapper again with `--confirmed`.
@@ -135,7 +142,7 @@ give the full quoted path to this plugin's prune wrapper.
 Users rarely type commands. Map what they mean (onboarding C30;
 AGENT-CLI-BOUNDARY §5):
 
-- "scan", "check my app", "is my app ok?": `reachable: check`.
+- "scan", "scan now", "check my app", "is my app ok?": the check wrapper ("scan now" above).
 - "what did it find?", "status": `reachable: status`.
 - "fix it", "remediate": `reachable: fix`.
 - "undo the Reachable fix", "my app broke after the fix": `reachable: undo`.
@@ -205,4 +212,4 @@ When the user asks what MCP exposes, summarize these tools:
 Use the packaged command wrappers internally for execution, but keep user-facing
 responses centered on `reachable: ...` commands rather than shell paths.
 
-Version: 1.0.0b282
+Version: 1.0.0b283
