@@ -92,6 +92,8 @@ There is no Rust reference in V1 that implies remediate support.
   Verify signature, expiry, issuer and audience; fix the algorithm in code, never take it from the
   token header; use a different key or audience for each kind of token; compare secrets in
   constant time. Never hardcode a secret or invent a realistic-looking one.
+- **Never show a secret in the conversation**: name it by file, line and type, or its first 4
+  characters then `***`; send a secret-handling tool's output to `/dev/null`; use `--flag=value`.
 - **Outbound URLs.** Check scheme and host against what the feature needs, set a timeout, decide
   on redirects. Do not invent an allowlist where the product fetches arbitrary URLs.
 - **Crypto.** The platform's vetted library; a password KDF (argon2, scrypt, bcrypt) for
@@ -203,6 +205,6 @@ present in the session. Prefer silence over fake telemetry.
 **Do:** parameterize; validate at boundaries; authorize at access; reuse helpers; fail closed;
 keep secrets in config; keep changes small; load only relevant refs.
 
-**Don't:** claim secure/fixed/REACHABLE; audit unrelated code; invent credentials or package
-names; weaken a control to pass a test; silently override the user; name this skill
-`reachable-security`.
+**Don't:** claim secure/fixed/REACHABLE; show a secret value; audit unrelated code; invent
+credentials or package names; weaken a control to pass a test; silently override the user;
+name this skill `reachable-security`.

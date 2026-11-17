@@ -8,8 +8,8 @@ Use this primer when you want the advanced technical view of REACHABLE inside a
 coding agent. For the normal path, use:
 
 1. reachable: setup
-2. reachable: doctor
-3. reachable: settings
+2. reachable: settings
+3. reachable: status
 
 SETUP MODEL
 -----------
@@ -34,38 +34,27 @@ Use reachable: settings to open the local Settings page for:
 
 Local plugin remediate policy is vibe-coding consent on this workspace. CI
 auto-remediate + Pages is the pipeline product loop. Deep remediate (noise
-boundary) is a per-run opt-in, not a broker toggle.
+boundary) is a per-run opt-in, not a Settings switch.
 
-Do not paste secrets into agent chat. The broker stores credentials through the
-local runtime and returns only redacted status to the agent. Browser setup
-requires an installed runtime and a working browser opener; it cannot approve
-the initial install. If opening fails, report the failure rather than claiming
-the connection was saved. Do not promise a host browser action unless the host
+Do not paste secrets into agent chat. The Settings tab stores credentials through
+the local runtime and returns only redacted status to the agent. Settings require
+an installed runtime and a working browser opener; they cannot approve the
+initial install. If opening fails, report the failure rather than claiming the
+connection was saved. Do not promise a host browser action unless the host
 actually provides one.
 
 AGENT COMMANDS
 --------------
 
 - reachable: help
-- reachable: primer
 - reachable: setup
-- reachable: doctor
-- reachable: settings
 - reachable: status
-- reachable: baseline show
-- reachable: baseline set
-- reachable: baseline override
-- reachable: remediation status
-- reachable: remediation enable
-- reachable: remediation disable
-- reachable: proof status
-- reachable: open dashboard
+- reachable: settings
 - reachable: uninstall
-- reachable: prune
 
-reachable: remediation enable opens the settings page; you turn fixing on there.
-No scan is started; remediation applies on the next eligible agent event or
-explicit remediation run.
+To turn Reachable ON, open `reachable: settings` and use the ON/OFF switch.
+No scan is started by that change; remediation applies on the next eligible
+agent event or explicit remediation run.
 
 reachable: uninstall runs inside this agent. It previews full removal, asks
 whether to export history and settings and asks for your confirmation, then

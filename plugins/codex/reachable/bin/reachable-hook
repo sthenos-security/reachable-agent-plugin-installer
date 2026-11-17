@@ -40,15 +40,15 @@ case "$payload" in
         printf '%s\n' "$payload" | "$reachctl_bin" hook-check --tool=codex --event="$event"
         rc=$?
         if [ "$rc" -eq 0 ] || [ "$rc" -eq 2 ]; then exit "$rc"; fi
-        # hook-check itself failed (a broken runtime): only the repair scripts
-        # pass, with no arguments, so `reachable: doctor` can fix it (case 12a).
+        # hook-check itself failed (a broken runtime): only repair scripts pass,
+        # with no arguments, so Reachable can fix its own runtime (case 12a).
         for script in setup.sh doctor.sh status.sh help.sh; do
             for form in "$plugin_root/scripts/$script" "bash $plugin_root/scripts/$script" "sh $plugin_root/scripts/$script"; do
                 case "$payload" in *"\"command\":\"$form\""*|*"\"command\": \"$form\""*) allow ;; esac
             done
         done
         echo "Reachable couldn't check this command (its runtime failed, exit $rc), so it is blocked." >&2
-        echo "Say 'reachable: doctor' to repair Reachable." >&2
+        echo "Say 'reachable: status' to see the repair step." >&2
         exit 2
         ;;
 esac
@@ -61,5 +61,5 @@ case "$payload" in
     *'/.agents/plugins/'*reachable*|*'/.claude/plugins/'*reachable*|*'/.codex/plugins/'*reachable*|*'/.config/devin/plugins/'*reachable*|*'/.cursor/plugins/'*reachable*) exit 0 ;;
 esac
 echo "REACHABLE is not installed, so this edit cannot be checked and is blocked." >&2
-echo "Repair with 'reachable: doctor' (or 'reachable: setup'), or remove the plugin." >&2
+echo "Repair with 'reachable: setup', or remove the plugin." >&2
 exit 2

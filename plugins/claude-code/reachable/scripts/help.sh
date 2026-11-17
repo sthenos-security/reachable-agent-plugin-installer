@@ -7,9 +7,10 @@ if [ "$#" -gt 1 ] || { [ "$#" -eq 1 ] && [ "$1" != "more" ]; }; then
 fi
 if [ "${1:-}" = "more" ]; then
 cat <<'EOF'
-reachable: doctor             check that Reachable itself is working
-reachable: uninstall          remove Reachable from this computer
-reachable: prune              clean up Reachable files left behind by an agent uninstall
+reachable: setup              set Reachable up for this app (once)
+reachable: status             what Reachable is doing, what it found and fixed
+reachable: settings           keys, and turning Reachable on or off
+reachable: help               show these commands and the next thing to do
 EOF
   exit 0
 fi
@@ -64,7 +65,7 @@ if [ -z "$reachctl_bin" ]; then
 elif action_out="$("$reachctl_bin" vibe action --workspace "$workspace" 2>&1)" && [ -n "$action_out" ]; then
   app_line="$(printf '%s\n' "$action_out" | head -n 1)"
 else
-  app_line="App: Reachable couldn't read this folder's setting ($(printf '%s' "$action_out" | tail -n 1)). Say \`reachable: doctor\`."
+  app_line="App: Reachable couldn't read this folder's setting ($(printf '%s' "$action_out" | tail -n 1)). Say \`reachable: status\`."
 fi
 cat <<'EOF'
 Reachable makes your agent write safer code, checks your app by itself,
@@ -78,6 +79,5 @@ cat <<'EOF'
 reachable: setup              set Reachable up for this app (once)
 reachable: status             what Reachable is doing, what it found and fixed
 reachable: settings           keys, and turning Reachable on or off
-
-More: reachable: help more
+reachable: help               show these commands and the next thing to do
 EOF

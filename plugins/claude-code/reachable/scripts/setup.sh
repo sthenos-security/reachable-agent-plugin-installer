@@ -122,20 +122,18 @@ if [ -x "$reachable_runtime" ] && ! "$reachable_runtime" vibe apps-inside --help
   echo "Reachable on this machine is older than this plugin: it can't list the apps it already checks inside $workspace. Setup upgrades it now. If an app inside this folder was set up on its own, run setup again afterwards to choose which to keep."
 elif [ -x "$reachable_runtime" ]; then
   if ! apps_inside="$("$reachable_runtime" vibe apps-inside --workspace "$workspace")"; then
-    echo "Setup didn't finish: it couldn't read which apps Reachable already checks inside $workspace. Run \`/reachable:setup\` to try again, or say \`reachable: report a problem\`." >&2
+    echo "Setup didn't finish: it couldn't read which apps Reachable already checks inside $workspace. Run \`/reachable:setup\` to try again, or say \"something's wrong\"." >&2
     exit 1
   fi
   if [ -n "$apps_inside" ] && [ -z "$replace_apps_inside" ]; then
     echo "Reachable already checks these apps on their own, inside $workspace:"
-    printf '%s
-' "$apps_inside" | sed 's/^/  - /'
+    printf '%s\n' "$apps_inside" | sed 's/^/  - /'
     echo "Check the whole project $workspace instead (they become part of it), or keep them as they are?"
     echo "(For the agent: ask the user. Whole project: run this setup again with --workspace and that folder, then --replace-apps-inside. Keep them: stop here; nothing was changed.)"
     exit 3
   fi
   if [ -n "$apps_inside" ]; then
-    printf '%s
-' "$apps_inside" | while IFS= read -r inner; do
+    printf '%s\n' "$apps_inside" | while IFS= read -r inner; do
       "$reachable_runtime" vibe uninstall --workspace "$inner" >/dev/null
       echo "Reachable now checks $inner as part of $workspace."
     done
@@ -154,7 +152,7 @@ fi
 # --version, so it resolves "latest" from the signed release manifest and
 # installs the newest wheel. The installer stays at this plugin's version; the
 # product does not. Updating the plugin is only needed to get a newer INSTALLER.
-installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b283/install.sh}"
+installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b284/install.sh}"
 release_manifest_url="${REACHABLE_RELEASE_MANIFEST_URL:-https://sthenosec.com/download/manifest.json}"
 installer_sha384="2405129751780bdd979b7af989ff64b9a106504ada8e1c25320ae3f980df07ab947d800b7e7a5fae06b719799875835b"
 verify_plugin_installer="${REACHABLE_VERIFY_PLUGIN_INSTALLER:-1}"
@@ -261,7 +259,9 @@ if [ "$verify_plugin_installer" != "0" ]; then
     exit 1
   fi
 fi
-tmp="$(mktemp "${TMPDIR:-/tmp}/reachable-install.XXXXXX")"
+tmp_dir="${REACHABLE_HOME:-$HOME/.reachable}/tmp"
+mkdir -p "$tmp_dir"
+tmp="$(mktemp "$tmp_dir/reachable-install.XXXXXX")"
 cleanup() { rm -f "$tmp"; }
 trap cleanup EXIT
 curl -fsSL --connect-timeout "$curl_connect_timeout" --max-time "$curl_archive_timeout" "$installer_url" -o "$tmp"

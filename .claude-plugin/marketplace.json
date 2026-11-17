@@ -14,7 +14,7 @@
         "url": "https://sthenosec.com"
       },
       "category": "security",
-      "description": "Install, verify and drive the REACHABLE local runtime from Claude Code. Adds the reachable MCP server and the reachable: setup / doctor / status skills.",
+      "description": "Install, verify and drive the REACHABLE local runtime from Claude Code. Adds the reachable MCP server and the reachable: setup / status / settings skills.",
       "homepage": "https://sthenosec.com",
       "keywords": [
         "security",
@@ -30,7 +30,7 @@
       "name": "reachable",
       "repository": "https://github.com/sthenos-security/reachable-agent-plugin-installer",
       "source": "./plugins/claude-code/reachable",
-      "version": "1.0.0b283"
+      "version": "1.0.0b284"
     }
   ]
 }

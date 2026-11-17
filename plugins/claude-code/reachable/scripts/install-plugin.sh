@@ -35,5 +35,5 @@ Next step: open the agent in this workspace and run:
   reachable: setup
 
 Then verify with:
-  reachable: doctor
+  reachable: status
 EOF

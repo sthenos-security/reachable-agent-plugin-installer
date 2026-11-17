@@ -13,7 +13,7 @@
     "category": "Developer Tools",
     "defaultPrompt": [
       "Check REACHABLE setup and remediation status for this workspace",
-      "Run the REACHABLE doctor and explain what is failing",
+      "Open REACHABLE status and explain what needs attention",
       "Show REACHABLE findings that are actually reachable in this repo"
     ],
     "developerName": "Sthenos Security, Inc.",
@@ -34,5 +34,5 @@
   "license": "LicenseRef-Sthenos-Proprietary",
   "name": "reachable",
   "repository": "https://github.com/sthenos-security/reachable-agent-plugin-installer",
-  "version": "1.0.0-beta.283"
+  "version": "1.0.0-beta.284"
 }

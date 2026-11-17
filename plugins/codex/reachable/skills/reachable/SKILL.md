@@ -1,21 +1,19 @@
 ---
 name: reachable
-description: Use REACHABLE to set up, verify, and inspect local vibe-coding security remediation from Codex, and to enable, disable, or uninstall REACHABLE from this computer.
-version: 1.0.0b283
+description: Use REACHABLE to set up, show status, open Settings, or explain help for local vibe-coding security remediation from Codex.
+version: 1.0.0b284
 ---
 
 # REACHABLE
 
-Use this skill when a user asks Codex to set up REACHABLE, check install health,
-run doctor, inspect MCP wiring, open the local dashboard, review remediation
-status, or turn remediation on or off for the current workspace.
+Use this skill when a user asks Codex to set up REACHABLE, show status,
+open Settings, inspect Reachable evidence, or turn Reachable on or off for the
+current workspace.
 
-Remediation can be turned off without removing anything: `reachable: remediation
-disable` stops it for this workspace while leaving the runtime, scan history and
-plugin setup in place. `reachable: uninstall` removes REACHABLE from this
-computer, including agent plugins, MCP entries, daemon and `~/.reachable` with
-scan history and credentials. Invoke the dedicated uninstall skill: preview,
-ask the user about export and confirm removal, then run its packaged wrapper.
+The user-facing surface is intentionally small. Setup, status, Settings, and
+help are the only normal commands to offer. Settings controls keys and whether
+Reachable may make changes; status shows what Reachable is doing and what it
+found. Do not teach hidden wrapper names as shortcuts.
 
 When `reachable: status` reports `setup.required` with `workspace_unregistered`,
 the one next step is `reachable: setup` for this workspace; run it, then check
@@ -34,7 +32,7 @@ Classify the request before acting:
 - REACHABLE command: if the user invokes `reachable: ...`, follow the packaged
   REACHABLE command path.
 - REACHABLE evidence or remediation: if the request involves REACHABLE
-  findings, reachability, exploitability, remediation policy, doctor/status,
+  findings, reachability, exploitability, remediation policy, status,
   MCP state, proof, or generated guardrails, use REACHABLE local evidence as
   authoritative.
 - General cybersecurity guidance: if no REACHABLE evidence or command is in
@@ -51,105 +49,49 @@ REACHABLE evidence, say so and keep the results separate.
 
 **Offer the user only four commands: `reachable: setup`, `reachable: status`,
 `reachable: settings` and `reachable: help`** (unified design Part A §5). Every
-other entry below runs only when the user's own words ask for it; never list it,
-suggest it, or tell the user to type it.
+other packaged wrapper runs only as an internal compatibility path when the
+user's own words ask for that behavior; never list it, suggest it, or tell the
+user to type it.
 
-- `reachable: primer`: show the advanced Vibe Primer with setup architecture,
-  token configuration, MCP tools, remediation policy, cleanup, and terminal
-  support references.
 - `reachable: setup`: install or update REACHABLE and wire this workspace,
   including Gate 1 FAST_TRACK skills for write-time prevention.
   Marketplace install and beta curl install deliver this plugin installer
   package; they do not run the full runtime setup until the user asks from the
   agent.
-- `reachable: doctor`: report the verdict plus summary fields. If the user asks
-  to add, rotate, replace, or reconfigure tokens, run
-  `reachable: settings` and open the credentials section in the local
-  setup broker when the installed runtime can open it. The browser broker
-  handles secrets and the chat receives only redacted status. If opening fails,
-  report the failure; do not claim a connection was saved or invent a host
-  browser action. Browser confirmation cannot approve an initial install.
-  For remediate policy, open the remediate section: workspace
-  enable/disable, signal families (`vibe-remediation-signals`), and the CI/CD
-  workflow remediate lane. Local plugin policy is vibe-coding consent; CI
-  auto-remediate + Pages is the pipeline product loop. Deep remediate is a
-  per-run noise-boundary opt-in, not a broker toggle.
 - `reachable: status`: run the status wrapper and start your reply with its
   `answer` lines, exactly and in order; they say what Reachable is doing or
-  found and the one thing to say next. Add details only when asked.
-- `reachable: baseline show`: show the confirmed baseline branch and mode for
-  this workspace.
-- `reachable: baseline set`: record the repo baseline branch/mode.
-- `reachable: baseline override`: set a per-clone baseline override.
-- `reachable: open dashboard`: open the local dashboard.
-- `reachable: action`: what Reachable does in this app, and the choices. Run
-  the action wrapper with no argument and relay its output; its first line,
-  "App: [path] · [setting]", is the first line of your answer.
-- `reachable: action report`: just report; Reachable won't change the code
-  ("just report"). Run the action wrapper with `report`.
-- `reachable: action stop`: pause automatic checks and fixes ("stop"). Run the
-  action wrapper with `stop`.
-- `reachable: action start`: watch again ("start"). It starts no check and
-  never turns fixing back on. Run the action wrapper with `start`.
-- `reachable: action ask-first`: keep approving each fix ("keep asking"). Run
-  the action wrapper with `ask-first`.
-When setup's output says it couldn't open the settings page and asks the
-question in chat, ask the user exactly that question. When they answer "fix"
-or "just report", run the record-answer wrapper with `fix` or `report` and
-relay its output. Never answer it for them.
-- `reachable: action allow-fixes`: the user wants Reachable to fix ("allow
-  fixes"). Run the action wrapper with `allow-fixes`: it opens Reachable's
-  settings page, and the user turns fixing on there. Never say fixing is on
-  until the setting line says so.
-- `reachable: remediation status`: report explicit local remediation policy and
-  run state.
-- `reachable: remediation enable`: the same as `reachable: action allow-fixes`.
-  Never run the remediation-enable wrapper yourself (AGENT-CLI-BOUNDARY §3.3).
-  Do not claim this starts a scan.
-- `reachable: remediation disable`: the same as `reachable: action report`.
-- `reachable: cost`: what Reachable's checks have cost in AI, with the cost
-  wrapper; relay its answer.
-- `reachable: report a problem`: ask "What went wrong, in your own words?",
-  then run the report wrapper with `--what "<their words>"`. Relay the summary
-  of what it includes; only after the user says yes, run it again with
-  `--confirmed` and give them the reference it prints.
-- `reachable: open`: open the Reachable page (results and fixes) in the
-  browser with the open wrapper.
+  found and the one thing to say next. It opens the Results tab for this
+  workspace. Add details only when asked.
 - `reachable: settings`: open the Settings tab (AI and GitHub access, what
   Reachable does) with the settings wrapper. Keys are typed there, never in chat.
-- `reachable: fix`: fix the problems Reachable found with the fix wrapper and
-  relay its answer. If the app is set to report, it opens the Settings tab;
-  only the user turns fixing on there.
-- "scan now": ask Reachable's daemon to scan this app with the check wrapper
-  and relay its answer. Never run a scan yourself; "scan", "check my app" and
-  "is my app ok?" mean this. The daemon runs the fast path first, then the scan
-  (unified design §7.3).
-- `reachable: undo`: undo the last Reachable fix with the undo wrapper. If it
-  says the user edited a fixed file since, relay its question exactly; only
-  after the user says yes, run the undo wrapper again with `--confirmed`.
-- `reachable: proof status`: report MCP proof status.
-- `reachable: uninstall`: use the dedicated skill to preview and, after the
-  user's confirmation and export choice, remove REACHABLE from this machine.
-- `reachable: prune`: clean orphaned REACHABLE-managed plugin files after
-  host/plugin uninstall.
 
-Use only the dedicated packaged wrapper for in-agent uninstall; never call
-raw `reachctl` or curl for it. Prune remains a user-run terminal command;
-give the full quoted path to this plugin's prune wrapper.
+When setup's output says it couldn't open the settings page and asks the
+question in chat, ask the user exactly that question. When they answer "fix"
+or "just report", record that answer with the packaged answer path and relay
+its output. Never answer it for them.
+
+If the user asks to add, rotate, replace, or reconfigure tokens, run
+`reachable: settings`; the Settings tab handles secrets and chat receives only
+redacted status. If opening fails, report the failure; do not claim a
+  connection was saved or invent a host browser action. Browser confirmation
+  cannot approve an initial install.
+
+If the user asks to scan, check the app, or run Reachable now, ask Reachable's
+daemon through the packaged Scan now path and relay its answer. Never run a
+scan yourself. The daemon runs the fast path first, then the scan (unified
+design §7.3). The Results tab also has the Scan now button for the same flow.
 
 ## Plain words
 
 Users rarely type commands. Map what they mean (onboarding C30;
 AGENT-CLI-BOUNDARY §5):
 
-- "scan", "scan now", "check my app", "is my app ok?": the check wrapper ("scan now" above).
+- "scan", "scan now", "check my app", "is my app ok?": ask Reachable's daemon through the packaged Scan now path.
 - "what did it find?", "status": `reachable: status`.
-- "fix it", "remediate": `reachable: fix`.
-- "undo the Reachable fix", "my app broke after the fix": `reachable: undo`.
-- "stop", "start", "just report": `reachable: action stop` / `start` / `report`;
-  "allow fixes", "keep asking": `reachable: action allow-fixes` / `ask-first`.
-- "add a key", "settings": `reachable: settings`.
-- "something's broken", "I have a question": `reachable: report a problem`.
+- "fix it", "remediate", "allow fixes", "keep asking": `reachable: settings`.
+- "stop", "start", "turn Reachable off", "just report": `reachable: settings`.
+- "add a key", "settings", "change tokens", "configure Reachable": `reachable: settings`.
+- "something's broken", "I have a question": `reachable: status`, then explain the status output.
 - "run reachctl …": give the exact command for their own terminal; don't run it.
 - Anything else Reachable-sounding: `reachable: help`.
 
@@ -158,8 +100,7 @@ AGENT-CLI-BOUNDARY §5):
 Never run raw `reachctl`, `reachable` or `python -m reachable` yourself, in any
 form, and don't look for their options. Reachable checks by itself as the agent
 changes code. If the user asks you to run a raw CLI command, give them the
-exact command for their own terminal. The dedicated `reachable: uninstall`
-skill is an exception only for its packaged wrapper after explicit confirmation.
+exact command for their own terminal.
 
 ## After a remediation run — check what actually shipped
 
@@ -174,8 +115,8 @@ After any remediation run, call `vibe.get_remediation_status`. If
 - tell the user which module is withheld and why, using the `reason` field;
 - name the affected findings as **candidate-closed but not promoted**, never as
   fixed;
-- offer the dashboard from `vibe.get_status` -> `daemon.ui_url` so they can
-  review it.
+- offer the Reachable page from `vibe.get_status` -> `daemon.ui_url` so they
+  can review it.
 
 If `attention.available` is `false` with a reason mentioning `unreadable`, say
 so — an unreadable trail is not a clean one.
@@ -212,4 +153,4 @@ When the user asks what MCP exposes, summarize these tools:
 Use the packaged command wrappers internally for execution, but keep user-facing
 responses centered on `reachable: ...` commands rather than shell paths.
 
-Version: 1.0.0b283
+Version: 1.0.0b284

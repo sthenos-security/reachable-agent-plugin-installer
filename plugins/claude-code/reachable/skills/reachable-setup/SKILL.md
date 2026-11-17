@@ -1,7 +1,7 @@
 ---
 name: reachable-setup
 description: "Run the Sthenos Security reachable setup command for this workspace. Use when the user types reachable: setup, reachable:setup, or asks to set up the reachable security plugin; do not treat reachable as a repository name."
-version: 1.0.0b283
+version: 1.0.0b284
 allowed-tools: Bash(sh "${CLAUDE_SKILL_DIR}/../../scripts/setup.sh"), Bash(sh ${CLAUDE_SKILL_DIR}/../../scripts/setup.sh)
 ---
 
@@ -64,7 +64,7 @@ packaged setup wrapper (the folder must exist). Never prefix the wrapper with
 
 This setup command may install or upgrade the local reachable runtime through
 the official signed installer, wire the current workspace for `claude_code`,
-open doctor/broker setup if credentials are needed, and register MCP/status
+open the Reachable page Settings tab if credentials are needed, and register MCP/status
 where supported. Do not start remediation or a baseline scan unless the user
 explicitly asks for it.
 
@@ -81,24 +81,23 @@ permissions (which may be preapproved), not a verified named, app-bound setup
 card. If the host cannot execute or approve it,
 report that setup is unavailable and offer a real retry/support path; browser
 confirmation cannot substitute for first-install approval before the runtime
-and broker are installed. Do not silently bypass host approval. If a later
+and Settings tab are available. Do not silently bypass host approval. If a later
 action has no working in-agent/browser entry point, explain the limitation and
 give the actual supported manual/terminal path rather than inventing a button
 or insisting it is command-free. A saved connection only updates connection
 status; it does not authorize a scan, watching, or a code edit. Do not claim
 the proposed Check/Watch actions exist until implemented and approved.
 
-Use `reachable: doctor` for health checks. If the user asks to add, rotate, or
-reconfigure tokens, run `reachable: settings` so the browser broker
-handles secrets. If the user asks to configure scanner controls or remediate
-options (signal families, CI/CD workflow remediate lane, enable/disable), open
-the remediate section in the same broker. The normal next
-actions after setup are showing health, status, or the local dashboard in the
-agent. Do not print the writable broker URL in the agent conversation. If the
-browser fails to open, do not claim a new connection was saved; report the
+For the normal user journey after setup, prefer `reachable: status`. If the user
+asks to add, rotate, or reconfigure tokens, run `reachable: settings` so the
+Settings tab handles secrets. If the user asks to configure scanner controls
+or remediate options (signal families, CI/CD workflow remediate lane,
+enable/disable), open Settings. Keep repair and diagnostics internal; do not
+offer hidden repair commands to the user. Do not print a writable Settings URL in the agent conversation. If
+the browser fails to open, do not claim a new connection was saved; report the
 failure and explain that a connection is optional for any basic checks the
 current plugin can actually perform. Do not offer the proposed Check app action
 until it exists. Offer support for opening the browser securely; only offer a
 host browser action if that host actually provides one.
 
-Version: 1.0.0b283
+Version: 1.0.0b284
