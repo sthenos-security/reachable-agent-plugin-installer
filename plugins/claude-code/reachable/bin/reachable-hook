@@ -20,6 +20,53 @@ allow() {
     case "$payload" in *'"cursor_version"'*) printf '%s\n' '{"permission":"allow"}' ;; esac
     exit 0
 }
+allow_repair_script() {
+    # A repair script with no arguments passes, so Reachable can set up or
+    # repair its own runtime (cases 12a and 13).
+    for script in setup.sh doctor.sh status.sh help.sh; do
+        for form in "$plugin_root/scripts/$script" "bash $plugin_root/scripts/$script" "sh $plugin_root/scripts/$script"; do
+            case "$payload" in *"\"command\":\"$form\""*|*"\"command\": \"$form\""*) allow ;; esac
+        done
+    done
+}
+uninstall_with_own_arguments() {
+    # `reachable: uninstall` must work when the runtime is missing or broken:
+    # uninstall.sh then runs the stdlib steps (U9, uninstall_core.py). This
+    # package's uninstall.sh with exactly the arguments the uninstall skill
+    # passes (the cli_boundary uninstall.sh rule): --preview, --yes --no-export,
+    # --yes --export <absolute path>. $1 is one segment, quotes removed.
+    # Until 2026-11-18 this was denied as "a plugin script with arguments", so
+    # uninstall removed nothing (INSTALLER-JOURNEY run 44400992606, J4).
+    uninstall_script="${1%%[[:space:]]*}"
+    uninstall_args="${1#"$uninstall_script"}"
+    case "$uninstall_script" in
+        "$plugin_root/scripts/uninstall.sh") ;;
+        "$plugin_root/skills/"*"/../../scripts/uninstall.sh")
+            uninstall_skill="${uninstall_script#"$plugin_root/skills/"}"
+            uninstall_skill="${uninstall_skill%/../../scripts/uninstall.sh}"
+            case "$uninstall_skill" in ""|*/*|.|..) return 1 ;; esac ;;
+        *) return 1 ;;
+    esac
+    case "$uninstall_args" in *'$('*|*'`'*) return 1 ;; esac
+    uninstall_args="$(printf '%s' "$uninstall_args" | sed -E -e 's/[[:space:]]+/ /g' -e 's/^ //' -e 's/ $//')"
+    case "$uninstall_args" in
+        "--preview"|"--yes --no-export") return 0 ;;
+        "--yes --export /"*)
+            # Quotes are gone here: the path is the rest of the line.
+            case "${uninstall_args#--yes --export }" in *" --"*) return 1 ;; esac
+            return 0 ;;
+    esac
+    return 1
+}
+allow_uninstall_alone() {
+    # A broken runtime (hook-check failed): uninstall.sh with its own
+    # arguments passes when it is the whole command, nothing chained to it.
+    uninstall_line="$(printf '%s' "$payload" | sed -nE 's/.*"command"[[:space:]]*:[[:space:]]*"(([^"\\]|\\.)*)".*/\1/p' \
+        | sed -E 's/[0-9]*>&[0-9]+//g; s/[0-9]*>>?[[:space:]]*[^[:space:]]+//g' | tr -d '"\\')"
+    case "$uninstall_line" in *';'*|*'|'*|*'&'*) return 0 ;; esac
+    uninstall_line="$(printf '%s' "$uninstall_line" | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//; s/^(ba|z)?sh[[:space:]]+//')"
+    if uninstall_with_own_arguments "$uninstall_line"; then allow; fi
+}
 case "$payload" in
     *'"tool_name":"Bash"'*|*'"tool_name": "Bash"'*|*'"tool_name":"Shell"'*|*'"tool_name": "Shell"'*|*'"tool_name":"shell"'*|*'"tool_name": "shell"'*|*'"tool_name":"exec"'*|*'"tool_name": "exec"'*|*'"tool_name":"developer__shell"'*|*'"tool_name": "developer__shell"'*)
         # AGENT-CLI-BOUNDARY §3.1: the agent's shell command. One that names no
@@ -32,21 +79,72 @@ case "$payload" in
         command_part="$(printf '%s' "$payload" | sed -E 's/"(cwd|transcript_path)"[[:space:]]*:[[:space:]]*"[^"]*"//g; s/"workspace_roots"[[:space:]]*:[[:space:]]*\[[^]]*\]//g')"
         lowered="$(printf '%s' "$command_part" | tr '[:upper:]' '[:lower:]')"
         case "$lowered" in
-            *reach*|*enzo*) ;;
+            *reach*|*enzo*|*'/install.sh'*|*' install.sh'*|*'"install.sh'*) ;;
             *) case "$command_part" in *"$reachable_home"*|*"$plugin_root"*) ;; *) allow ;; esac ;;
         esac
-        # No runtime yet: nothing to protect (case 13).
-        [ -n "$reachctl_bin" ] || allow
+        if [ -z "$reachctl_bin" ]; then
+            # No runtime yet (case 13, B2 §6a): a Reachable program has nothing
+            # to run, so only installing the runtime from the shell is refused;
+            # `reachable: setup` installs it after asking the user.
+            allow_repair_script
+            # The package's own setup.sh with only setup's grammar passes: §6.1 runs it
+            # again with `--consent yes` after the user's y (design §6a, 2026-11-18).
+            setup_with_own_arguments() {
+                setup_script="${1%%[[:space:]]*}"
+                setup_args="${1#"$setup_script"}"
+                case "$setup_script" in
+                    "$plugin_root/scripts/setup.sh"|"$plugin_root/bin/reachable-setup") ;;
+                    "$plugin_root/skills/"*"/../../scripts/setup.sh")
+                        setup_skill="${setup_script#"$plugin_root/skills/"}"
+                        setup_skill="${setup_skill%/../../scripts/setup.sh}"
+                        case "$setup_skill" in ""|*/*|.|..) return 1 ;; esac ;;
+                    *) return 1 ;;
+                esac
+                case "$setup_args" in *'$('*|*'`'*) return 1 ;; esac
+                # Quotes are gone here: the folder is every word up to the next option.
+                setup_rest="$(printf ' %s ' "$setup_args" | sed -E -e 's/[[:space:]]--consent[[:space:]]+yes[[:space:]]/ /' -e 's/[[:space:]]--replace-apps-inside[[:space:]]/ /' -e 's/^[[:space:]]+//' -e 's/[[:space:]]+$//')"
+                case "$setup_rest" in
+                    "") return 0 ;;
+                    "--workspace "*)
+                        setup_folder="${setup_rest#--workspace }"
+                        case "$setup_folder" in ""|-*|*" --"*) return 1 ;; esac
+                        return 0 ;;
+                esac
+                return 1
+            }
+            installs=""
+            case "$lowered" in
+                *'/install.sh'*|*' install.sh'*|*'"install.sh'*) installs="names the Reachable installer" ;;
+                *'|sh '*|*'|sh"'*|*'|sh;'*|*'|sh&'*|*'|sh)'*|*'|sh\'*|*'| sh '*|*'| sh"'*|*'| sh;'*|*'| sh&'*|*'| sh)'*|*'| sh\'*|*'|bash '*|*'|bash"'*|*'|bash;'*|*'|bash&'*|*'|bash)'*|*'|bash\'*|*'| bash '*|*'| bash"'*|*'| bash;'*|*'| bash&'*|*'| bash)'*|*'| bash\'*|*'|zsh '*|*'|zsh"'*|*'|zsh;'*|*'|zsh&'*|*'|zsh)'*|*'|zsh\'*|*'| zsh '*|*'| zsh"'*|*'| zsh;'*|*'| zsh&'*|*'| zsh)'*|*'| zsh\'*) installs="pipes into a shell" ;;
+            esac
+            if [ -z "$installs" ]; then
+                # Each segment of the command (split on ; | &, redirections
+                # dropped, quotes removed): a plugin file run with a word after it.
+                segments="$(printf '%s' "$payload" | sed -nE 's/.*"command"[[:space:]]*:[[:space:]]*"(([^"\\]|\\.)*)".*/\1/p' \
+                    | sed -E 's/[0-9]*>&[0-9]+//g; s/[0-9]*>>?[[:space:]]*[^[:space:]]+//g' | tr -d '"\\' | tr ';|&' '\n\n\n')"
+                while IFS= read -r segment; do
+                    segment="$(printf '%s' "$segment" | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//; s/^(ba|z)?sh[[:space:]]+//')"
+                    case "$segment" in
+                        "$plugin_root/"*[[:space:]]*)
+                            setup_with_own_arguments "$segment" || uninstall_with_own_arguments "$segment"                                 || installs="runs a Reachable plugin script with arguments" ;;
+                    esac
+                done <<SEGMENTS
+$segments
+SEGMENTS
+            fi
+            [ -n "$installs" ] || allow
+            echo "Reachable isn't installed yet, and this command $installs, so it is blocked." >&2
+            echo "Say 'reachable: setup' to install it; don't install it from the shell." >&2
+            exit 2
+        fi
         printf '%s\n' "$payload" | "$reachctl_bin" hook-check --tool=claude-code --event="$event"
         rc=$?
         if [ "$rc" -eq 0 ] || [ "$rc" -eq 2 ]; then exit "$rc"; fi
         # hook-check itself failed (a broken runtime): only repair scripts pass,
-        # with no arguments, so Reachable can fix its own runtime (case 12a).
-        for script in setup.sh doctor.sh status.sh help.sh; do
-            for form in "$plugin_root/scripts/$script" "bash $plugin_root/scripts/$script" "sh $plugin_root/scripts/$script"; do
-                case "$payload" in *"\"command\":\"$form\""*|*"\"command\": \"$form\""*) allow ;; esac
-            done
-        done
+        # with no arguments, so Reachable can fix its own runtime (case 12a),
+        # and uninstall with its own arguments, so it can always be removed.
+        allow_repair_script
+        allow_uninstall_alone
         echo "Reachable couldn't check this command (its runtime failed, exit $rc), so it is blocked." >&2
         echo "Say 'reachable: status' to see the repair step." >&2
         exit 2

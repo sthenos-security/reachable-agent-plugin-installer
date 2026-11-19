@@ -67,7 +67,10 @@ if [ -z "$named_workspace" ] && [ -z "${REACHABLE_WORKSPACE:-}" ]; then
       app_count=$((app_count + 1))
     fi
   done
-  if [ "$here" = "$home_dir" ] || { [ "$app_count" -gt 1 ] && ! reachable_is_app "$here"; }; then
+  # Unified design Part A §6.5 R1: a folder that is not an app and holds even ONE
+  # app is asked about. Setting up the plain folder made that app a "nested
+  # project" whose problems were reported and never fixed.
+  if [ "$here" = "$home_dir" ] || { [ "$app_count" -ge 1 ] && ! reachable_is_app "$here"; }; then
     if [ "$app_count" -eq 0 ]; then
       echo "Which app should Reachable check? I found no app directly in $here."
       echo "Open your agent in your app's folder, then run setup again."
@@ -138,6 +141,31 @@ elif [ -x "$reachable_runtime" ]; then
       echo "Reachable now checks $inner as part of $workspace."
     done
   fi
+  # Unified design Part A §6.5 R4: the user said yes to switching from a
+  # provisional folder (no git, no manifest) to the app inside it. The folder
+  # stops being set up, so it is not checked twice and asks no more. A runtime
+  # older than this command is upgraded below; the switch finishes on the next setup.
+  if "$reachable_runtime" vibe provisional-around --help >/dev/null 2>&1; then
+    if ! provisional_around="$("$reachable_runtime" vibe provisional-around --workspace "$workspace")"; then
+      echo "Setup didn't finish: it couldn't read which folders around $workspace Reachable is set up on. Run \`/reachable:setup\` to try again, or say \"something's wrong\"." >&2
+      exit 1
+    fi
+    if [ -n "$provisional_around" ]; then
+      reachable_old_ifs="$IFS"
+      IFS='
+'
+      set -f
+      for outer in $provisional_around; do
+        if ! "$reachable_runtime" vibe uninstall --workspace "$outer" >/dev/null; then
+          echo "Setup didn't finish: it couldn't stop checking $outer. Run \`/reachable:setup\` to try again, or say \"something's wrong\"." >&2
+          exit 1
+        fi
+        echo "Reachable now checks $workspace instead of $outer."
+      done
+      set +f
+      IFS="$reachable_old_ifs"
+    fi
+  fi
 fi
 # The IMMUTABLE per-version asset, never the mutable front door.
 #
@@ -152,9 +180,9 @@ fi
 # --version, so it resolves "latest" from the signed release manifest and
 # installs the newest wheel. The installer stays at this plugin's version; the
 # product does not. Updating the plugin is only needed to get a newer INSTALLER.
-installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b284/install.sh}"
+installer_url="${REACHABLE_INSTALLER_URL:-https://github.com/sthenos-security/reach-dist/releases/download/v1.0.0b285/install.sh}"
 release_manifest_url="${REACHABLE_RELEASE_MANIFEST_URL:-https://sthenosec.com/download/manifest.json}"
-installer_sha384="2405129751780bdd979b7af989ff64b9a106504ada8e1c25320ae3f980df07ab947d800b7e7a5fae06b719799875835b"
+installer_sha384="2824a57cd6800657022a018ded1607fcf75e022693fbaa8c04d618bb076f5e8cf9ae9517f043c4873dc809dbe9331fe4"
 verify_plugin_installer="${REACHABLE_VERIFY_PLUGIN_INSTALLER:-1}"
 release_selector="${REACHABLE_RELEASE_SELECTOR:-latest}"
 local_wheel="${REACHABLE_LOCAL_WHEEL:-}"

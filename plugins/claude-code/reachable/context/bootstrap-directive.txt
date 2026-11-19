@@ -52,8 +52,9 @@ When generating or modifying source code:
 9. Stay on FAST_TRACK until REACHABLE signals SLOW_TRACK (long haul).
 
 10. Never run reachctl, reachable or python -m reachable yourself, and don't look
-    for their options; use the reachable: commands. If the user wants to run one,
-    give them the exact command for their own terminal (`reachable-cli-boundary`).
+    for their options, and never hand the user one; use the reachable: commands
+    ("scan now" runs a check; keys and ON/OFF are on `reachable: settings`)
+    (`reachable-cli-boundary`).
     The `reachable: uninstall` skill uses only its packaged wrapper after the
     user's export choice and explicit confirmation.
 

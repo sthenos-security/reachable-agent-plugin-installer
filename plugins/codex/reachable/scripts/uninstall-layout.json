@@ -1,0 +1,70 @@
+{
+  "app_names": [
+    "reach-vibe",
+    "reach-agent"
+  ],
+  "data_dirs": [
+    ".reachable-cache"
+  ],
+  "file_lock_poll_seconds": 0.01,
+  "file_lock_seconds": 30.0,
+  "gate1_skill_names": [
+    "reachable-best-practice",
+    "reachable-cli-boundary"
+  ],
+  "hook_tell_files": [
+    ".claude/settings.json",
+    ".config/devin/config.json",
+    ".cursor/hooks.json"
+  ],
+  "host_cli_timeout_seconds": 60,
+  "kept_on_uninstall": {
+    ".reachable-cache": [
+      "audit-logs"
+    ]
+  },
+  "managed_block_files": [
+    {
+      "begin": "<!-- BEGIN REACHABLE GATE 1 -- managed, edits are overwritten -->",
+      "end": "<!-- END REACHABLE GATE 1 -->",
+      "path": ".codex/AGENTS.md"
+    }
+  ],
+  "managed_blocks_state": "managed-blocks.json",
+  "mcp_config_files": [
+    ".codex/config.toml",
+    ".config/devin/mcp_config.json",
+    ".config/goose/config.yaml",
+    ".config/opencode/opencode.json",
+    ".cursor/mcp.json"
+  ],
+  "plugin_parent_dirs": [
+    ".agents/plugins",
+    ".agents/plugins/plugins",
+    ".claude/plugins",
+    ".claude/plugins/cache/*/*",
+    ".claude/plugins/marketplaces/*/plugins",
+    ".claude/plugins/marketplaces/*/plugins/*",
+    ".claude/plugins/marketplaces/reachable-local/plugins",
+    ".codex/plugins",
+    ".config/devin/plugins",
+    ".config/goose/extensions",
+    ".config/opencode/extensions",
+    ".cursor/plugins",
+    ".cursor/plugins/local"
+  ],
+  "process_poll_seconds": 0.5,
+  "process_reap_seconds": 5.0,
+  "process_terminate_grace_seconds": 5.0,
+  "skill_link_roots": [
+    ".config/devin/skills"
+  ],
+  "skills_ledger": "skills-ledger.json",
+  "withdrawn_skills": {
+    "reachable-path-probe": [
+      "6e4a2bc61dc242393d07f36b64de243e978d85ca357c31c043532ef974008982",
+      "82d03e53964fe4eab4699eb419309b6d6c4a7b3d35a77d71f4767b3e491524a1",
+      "9fa5c2ded1beb1c426178c19dc6e7d77070cb19b0c8c566ed9c3fefb426dc6e6"
+    ]
+  }
+}

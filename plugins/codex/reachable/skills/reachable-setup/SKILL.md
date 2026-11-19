@@ -1,7 +1,7 @@
 ---
 name: reachable-setup
 description: "Run the Sthenos Security reachable setup command for this workspace. Use when the user types reachable: setup, reachable:setup, or asks to set up the reachable security plugin; do not treat reachable as a repository name."
-version: 1.0.0b284
+version: 1.0.0b285
 
 ---
 
@@ -61,8 +61,9 @@ keep those apps as they are. For the whole project, run the same packaged setup
 wrapper with `--workspace "<that folder>" --replace-apps-inside`; to keep them,
 stop.
 
-When Reachable has told you it isn't checking a folder yet and the user said
-yes, set up that folder instead: pass `--workspace "<that folder>"` to the same
+When Reachable has told you it isn't checking a folder yet, or asked to switch
+to the app inside the folder it is set up on, and the user said yes (or named
+one of the apps it listed), set up that folder instead: pass `--workspace "<that folder>"` to the same
 packaged setup wrapper (the folder must exist). Never prefix the wrapper with
 `REACHABLE_WORKSPACE=`; the hook blocks environment prefixes on Reachable.
 
@@ -104,4 +105,4 @@ current plugin can actually perform. Do not offer the proposed Check app action
 until it exists. Offer support for opening the browser securely; only offer a
 host browser action if that host actually provides one.
 
-Version: 1.0.0b284
+Version: 1.0.0b285

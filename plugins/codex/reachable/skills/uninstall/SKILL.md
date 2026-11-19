@@ -10,12 +10,13 @@ current app folder as the working directory. Use only this packaged wrapper;
 do not run raw `reachctl`, curl or manual file deletion.
 
 1. Preview without removal: Resolve `$PLUGIN_ROOT` to the absolute plugin package directory containing `scripts/` and `skills/`, then run `$PLUGIN_ROOT/scripts/uninstall.sh --preview` from the current workspace.
-   If the wrapper reports that the runtime is missing or unhealthy, explain
-   that full removal needs a working runtime. Ask before running the packaged
-   `reachable: setup` skill to repair it, then retry this preview. If repair
-   fails, report the incomplete uninstall; do not delete files by hand.
+   If the runtime is missing or broken, the wrapper says so and removes
+   REACHABLE without it: there is nothing to export then, and its list may
+   end with items marked "left, needs the runtime". Show those to the user
+   as they are; do not run setup and do not delete files by hand.
 2. Show the preview to the user. Ask whether to export scan history and
-   settings (credentials are excluded), and ask explicitly whether to remove
+   settings (credentials are excluded), unless the preview said there is
+   nothing to export, and ask explicitly whether to remove
    REACHABLE from this computer, including credentials and scan history.
    Do not assume either answer. If the user declines, stop.
 3. After an explicit yes and export choice, run `$PLUGIN_ROOT/scripts/uninstall.sh --yes --no-export`

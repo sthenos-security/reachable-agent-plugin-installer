@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 set -eu
 workspace="${REACHABLE_WORKSPACE:-$(pwd)}"
+script_dir="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 if [ -n "${REACHABLE_HOME:-}" ]; then
   if [ -z "${HOME:-}" ]; then
     echo "REACHABLE_HOME is set but HOME is empty; cannot determine agent config home for reachable setup." >&2
@@ -51,7 +52,10 @@ elif [ -x "$reachable_home/venv/bin/reachctl" ]; then
   fi
 fi
 if [ -z "$reachctl_bin" ]; then
-  echo "REACHABLE runtime is missing or unhealthy. Run the packaged reachable: setup skill to repair it, then retry uninstall; no files were removed." >&2
-  exit 1
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "REACHABLE runtime is missing, and python3 is not installed, so uninstall cannot run; no files were removed. Install python3, then retry uninstall." >&2
+    exit 1
+  fi
+  REACHABLE_HOME="$reachable_home" exec python3 -I "$script_dir/uninstall_core.py" --workspace "$workspace" "$@"
 fi
 exec "$reachctl_bin" vibe uninstall --full --workspace "$workspace" "$@"

@@ -1,7 +1,7 @@
 ---
 name: reachable
 description: Use REACHABLE to set up, show status, open Settings, or explain help for local vibe-coding security remediation from Claude Code.
-version: 1.0.0b284
+version: 1.0.0b285
 ---
 
 # REACHABLE
@@ -76,31 +76,30 @@ redacted status. If opening fails, report the failure; do not claim a
   connection was saved or invent a host browser action. Browser confirmation
   cannot approve an initial install.
 
-If the user asks to scan, check the app, or run Reachable now, ask Reachable's
-daemon through the packaged Scan now path and relay its answer. Never run a
-scan yourself. The daemon runs the fast path first, then the scan (unified
-design §7.3). The Results tab also has the Scan now button for the same flow.
+If the user asks to scan, check the app, or run Reachable now, use the
+`scan-now` skill and relay its answer. It asks Reachable's daemon for a scan now
+(unified design §5.1, §7.3): fast path first, then the scan. The Results tab's
+Scan now button does the same.
 
 ## Plain words
 
 Users rarely type commands. Map what they mean (onboarding C30;
 AGENT-CLI-BOUNDARY §5):
 
-- "scan", "scan now", "check my app", "is my app ok?": ask Reachable's daemon through the packaged Scan now path.
+- "scan", "scan now", "check my app", "is my app ok?": the `scan-now` skill.
 - "what did it find?", "status": `reachable: status`.
 - "fix it", "remediate", "allow fixes", "keep asking": `reachable: settings`.
 - "stop", "start", "turn Reachable off", "just report": `reachable: settings`.
 - "add a key", "settings", "change tokens", "configure Reachable": `reachable: settings`.
 - "something's broken", "I have a question": `reachable: status`, then explain the status output.
-- "run reachctl …": give the exact command for their own terminal; don't run it.
 - Anything else Reachable-sounding: `reachable: help`.
 
 ## Reachable's command line is the user's
 
 Never run raw `reachctl`, `reachable` or `python -m reachable` yourself, in any
-form, and don't look for their options. Reachable checks by itself as the agent
-changes code. If the user asks you to run a raw CLI command, give them the
-exact command for their own terminal.
+form, and don't look for their options. Never suggest them to the user either:
+Reachable checks by itself as the agent changes code, "scan now" runs a check,
+and keys and the ON/OFF switch are on the page `reachable: settings` opens.
 
 ## After a remediation run — check what actually shipped
 
@@ -146,11 +145,11 @@ When the user asks what MCP exposes, summarize these tools:
 - `vibe.get_compliance`: Read-only per-framework compliance evidence pack.
 - `vibe.get_remediation_audit`: What was found, what the agent changed, what remained.
 - `vibe.get_artifact_trust_status`: Signed-artifact trust posture and verification counts.
-- `vibe.open_config`: Observe-only Doctor URL from MCP; use reachable: settings for changes.
+- `vibe.open_config`: Where settings change: tells the agent to run reachable: settings; opens nothing.
 - `vibe.doctor`: Redacted install/debug verdict and log pointers.
 - `vibe.get_help`: Agent-safe MCP help payload.
 
 Use the packaged command wrappers internally for execution, but keep user-facing
 responses centered on `reachable: ...` commands rather than shell paths.
 
-Version: 1.0.0b284
+Version: 1.0.0b285

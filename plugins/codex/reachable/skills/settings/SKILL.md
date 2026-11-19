@@ -10,4 +10,4 @@ root as the directory that contains both `scripts/` and `skills/`,
 then run exactly this wrapper by absolute path: `$PLUGIN_ROOT/scripts/settings.sh`.
 
 
-Relay the output. Keys are typed on the settings page, never in chat.
+Relay the output. Keys are typed on the settings page, never in chat. If the page did not open or was closed, the user says `reachable: settings` again; never send them to a page address or a Settings tab (that tab is read-only).
